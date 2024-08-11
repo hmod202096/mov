@@ -1,0 +1,87 @@
+﻿@model CustomerViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <form method="get">
+
+        <div class="form-group">
+            <label asp-for="Mobily">رقم الجـوال</label>
+            <input asp-for="Mobily" class="form-control" placeholder="أدخل رقم الجوال">
+            <span asp-validation-for="Mobily" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+            بحث
+        </button>
+
+        <div>
+                @if (ViewBag.IsNull)
+                {
+                }
+                else if (Model == null)
+                {
+                    <p class="text-danger text-center">لم يفلح في عملية البحث ... </p>
+                }
+            </div>
+
+    </form>
+
+
+    @if (Model != null)
+    {
+
+        <h4 class="card-title text-left text-muted" style="border-bottom-style:groove">تعديل بيانات المتبرع</h4>
+
+        <br />
+
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+
+        <form asp-action="Index" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Mobily" class="form-label"></label>
+                <input asp-for="Mobily" class="form-control">
+                <span asp-validation-for="Mobily" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NeighId" class="form-label"></label>
+                <select asp-for="NeighId" id="neigh"
+                        asp-items="@(new SelectList(Model.NeighborhoodsList,"Id","Name"))" class="form-control">
+                    <option value="">اختيار اسم الحي ...</option>
+                </select>
+                <span asp-validation-for="NeighId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <div class="col-md-2">
+
+                </div>
+                <div class="col-md-4">
+                    <partial name="_UpdateAndBackToListButtonPartial" />
+                </div>
+            </div>
+        </form>
+    }
+
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

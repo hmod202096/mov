@@ -1,0 +1,112 @@
+﻿@model IEnumerable<StatisticsViewModel>
+
+@{
+    ViewData["Title"] = "AppointmentByDate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-info text-center">عدد المواعيد حسب الفروع</h2>
+        </div>
+    </div>
+    <hr />
+
+    <form method="get">
+        @{
+            DateTime fromDate;
+            DateTime toDate;
+            fromDate = DateTime.Parse(ViewBag.d1);
+            toDate = DateTime.Parse(ViewBag.d2);
+        }
+
+        <div class="form-group row">
+            <label for="fromDate" class="col-sm-2 col-form-label">من تاريخ :</label>
+            <div class="col-sm-10">
+                <input id="d1" type="text" name="fromDate" class="datepicker form-control" value="@fromDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="toDate" class="col-sm-2 col-form-label">إلى تاريخ :</label>
+            <div class="col-sm-10">
+                <input id="d2" type="text" name="toDate" class="datepicker form-control" value="@toDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2">
+
+            </div>
+            <div class="col-sm-10">
+                <button id="search" type="submit" class="btn btn-primary">تنفيذ</button>
+            </div>
+        </div>
+    </form>
+
+
+
+    <div>
+      
+            @if (Model.Count() == 0)
+            {
+                <p class="text-danger text-center"> لا توجد سجلات .....</p>
+            }
+            else
+            {
+                <div class="container">
+                    <h2 class="text-muted">تقرير : </h2>
+                    <p>ملخص عن المواعيد التي تم حجزها ومعرفة المواعيد التي لم يتم تنفيذها من قبل مسئول الحركة أو من قبل السائق :</p>
+                    <table class="table table-bordered">
+                        <thead style="background-color:#e2dfdf">
+                            <tr>
+                                <th>اسم الفرع</th>
+                                <th>اجمالي المواعيد</th>
+                                <th>المواعيد المنفذه</th>
+                                <th>المواعيد التي لم توزع على السائقين</th>
+                                <th>المواعيد التي لم تنفذ من قبل السائق</th>
+                                <th>المواعيد التي تم الغاءها من قبل السائق</th>
+                                <th>المواعيد التي تم حذفها من قبل المسؤول</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var gr in Model)
+                            {
+                            <tr>
+                                <td>@gr.StatusName</td>
+                                <td>@gr.Total</td>
+                                <td>@gr.CompletedDone</td>
+                                <td>@gr.BookingDone</td>
+                                <td>@gr.DriverDone</td>
+                                <td>@gr.CancelDone</td>
+                                <td>@gr.DeleteDone</td>
+                            </tr>
+
+                            }
+
+                        <tr>
+                            <th>المجموع</th>
+                            <th>@Model.Sum(m => m.Total)</th>
+                            <th>@Model.Sum(m => m.CompletedDone)</th>
+                            <th>@Model.Sum(m => m.BookingDone)</th>
+                            <th>@Model.Sum(m => m.DriverDone)</th>
+                            <th>@Model.Sum(m => m.CancelDone)</th>
+                            <th>@Model.Sum(m => m.DeleteDone)</th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            }
+    </div>
+
+</div>
+
+@section Scripts{
+    <script src="~/js/CustomDateTimePicker.js"></script>
+    <script src="~/js/CompareDate .js"></script>
+}
+
+

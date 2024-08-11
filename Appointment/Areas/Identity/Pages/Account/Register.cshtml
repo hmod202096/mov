@@ -1,0 +1,271 @@
+﻿@page
+@model RegisterModel
+@inject Appointment.Repositories.IBranchRepository _BranchRepo
+@inject Appointment.Repositories.IUserTypeReository _userTypeRepo
+@inject Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> _roleManager
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<style>
+    body {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .note {
+        text-align: center;
+        height: 80px;
+        background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+        color: #fff;
+        font-weight: bold;
+        line-height: 80px;
+    }
+
+    .form-content {
+        padding: 5%;
+        border: 1px solid #ced4da;
+        margin-bottom: 2%;
+    }
+
+    .form-control {
+        border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+        border: none;
+        border-radius: 1.5rem;
+        padding: 1%;
+        width: 20%;
+        cursor: pointer;
+        background: #0062cc;
+        color: #fff;
+    }
+
+
+    .gradient-custom {
+        /* fallback for old browsers */
+        background: #ff0000;
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1));
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1))
+    }
+
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+        font-size: 1rem;
+        line-height: 2.15;
+        padding-left: .75em;
+        padding-right: .75em;
+    }
+
+    .card-registration .select-arrow {
+        top: 13px;
+    }
+</style>
+
+<div class="webBackground">
+    <div class="whiteBackround">
+        <form class="container register-form" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div class="form">
+                <div class="note">
+                    <h3>انشاء حساب جديد</h3>
+                </div>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="* اسمك" asp-for="Input.Name" />
+                                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="* رقم الهاتف" asp-for="Input.PhoneNumber" />
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="مدينتك" asp-for="Input.City" />
+                                <span asp-validation-for="Input.City" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="* الايميل" asp-for="Input.Email" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <select asp-for="Input.UserTypeId" class="form-control" asp-items="(await _userTypeRepo.GetAll()).Select(x=> new SelectListItem() { Text = x.Type, Value = x.Id.ToString()})">
+                                    <option value=""> * نوع المستخدم ... </option>
+                                </select>
+                                <span asp-validation-for="Input.UserTypeId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <select asp-for="Input.BranchId" class="form-control" asp-items="(await _BranchRepo.GetAll()).Select(x=> new SelectListItem() { Text = x.Name, Value = x.Id.ToString()})">
+                                    <option value=""> * اسم الفرع ... </option>
+                                </select>
+                                <span asp-validation-for="Input.BranchId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btnSubmit">تسجيــل</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div>
+    @*<div class="webBackground">
+            <div class="whiteBackround">
+
+
+
+
+                <h1>تسجيل </h1>
+                <h4>انشاء حساب جديد</h4>
+                <hr />
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.Name" class="form-label"></label>
+                                <input asp-for="Input.Name" class="form-control">
+                                <span asp-validation-for="Input.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.Email" class="form-label"></label>
+                                <input asp-for="Input.Email" class="form-control">
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                                <input asp-for="Input.PhoneNumber" class="form-control">
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.City" class="form-label"></label>
+                                <input asp-for="Input.City" class="form-control">
+                                <span asp-validation-for="Input.City" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.Password" class="form-label"></label>
+                                <input asp-for="Input.Password" class="form-control">
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                                <input asp-for="Input.ConfirmPassword" class="form-control">
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.UserTypeId" class="form-label"></label>
+                                <select asp-for="Input.UserTypeId" class="form-control" asp-items="(await _userTypeRepo.GetAll()).Select(x=> new SelectListItem() { Text = x.Type, Value = x.Id.ToString()})">
+                                    <option value=""> نوع المستخدم ... </option>
+                                </select>
+                                <span asp-validation-for="Input.UserTypeId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 col-md-8">
+                                <label asp-for="Input.BranchId" class="form-label"></label>
+                                <select asp-for="Input.BranchId" class="form-control" asp-items="(await _BranchRepo.GetAll()).Select(x=> new SelectListItem() { Text = x.Name, Value = x.Id.ToString()})">
+                                    <option value=""> يجب اختيار اسم الفرع ... </option>
+                                </select>
+                                <span asp-validation-for="Input.BranchId" class="text-danger"></span>
+                            </div>
+
+                            @if (User.IsInRole(SD.AdminUser))
+                            {
+
+                                <div role="group" aria-labelledby="group-heading">
+                                    <h3 id="group-heading">الصلاحيات</h3>
+                                    <div class="form-group">
+                                        @foreach (var item in _roleManager.Roles)
+                                        {
+                                            <div class="form-group row">
+                                                <input type="checkbox" id="@item.Id">
+                                                <label for="@item.Id">@item.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+
+                                <fieldset>
+                                    <legend>Select one or more colors</legend>
+
+                                    @foreach (var item in _roleManager.Roles)
+                                    {
+                                        <input type="checkbox">
+                                        <label for="@item.Name">@item.Name</label>
+                                    }
+                                </fieldset>
+
+
+
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <div class="row col-md-8">
+                                            <div class="col-md-3 col-sm-6">
+                                                <label class="form-check-label">
+                                                    <input type="radio" value="@SD.ManagerUser" name="rdUresRolw" checked /> مدير
+                                                </label>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6">
+                                                <label class="form-check-label">
+                                                    <input type="radio" value="@SD.EmployeekUser" name="rdUresRolw" /> موظف
+                                                </label>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6">
+                                                <label class="form-check-label">
+                                                    <input type="radio" value="@SD.DriverUser" name="rdUresRolw" /> سائق
+                                                </label>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6">
+                                                <label class="form-check-label">
+                                                    <input type="radio" value="@SD.CustomerUser" name="rdUresRolw" /> عميل
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <button type="submit" class="btn btn-primary">تسجيل</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

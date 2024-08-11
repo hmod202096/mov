@@ -1,0 +1,68 @@
+﻿@model UserViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">قائمة السائقين</h2>
+        </div>
+
+        <div class="col-6 text-left mb-1">
+           
+        </div>
+    </div>
+
+    <div>
+        @if (Model.ApplicationUsersList.Count() == 0)
+        {
+        <p class="text-danger"> لم يتم تسجيل سائقين </p>
+        }
+        else
+        {
+            <table class="table table-striped border">
+                <tr class="table-secondary">
+                    <th>
+                        اسم السائق
+                    </th>
+                    <th>
+                        الهاتف
+                    </th>
+                    <th>
+                        نشط
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.ApplicationUsersList)
+                {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Active)
+                </td>
+                <td style="width:150px">
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" class="btn btn-primary text-white" asp-route-id="@item.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+                }
+            </table>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,198 @@
+﻿@model IEnumerable<ReservationByDateViewModel>
+
+@{
+    ViewData["Title"] = "ViewReservationByDate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="whiteBackround border">
+
+    <form method="get">
+        @{
+            string d1 = ViewBag.dat;
+            DateTime dat = DateTime.Now;
+
+            if (d1 != null)
+            {
+                dat = DateTime.Parse(d1);
+            }
+            else
+            {
+                dat = DateTime.Now;
+            }
+        }
+        <div class="form-group">
+            <div class="input-group">
+                <label for="dat" class="input-group-text">التاريخ</label>
+                <input id="dat" type="text" name="dat" class="datepicker form-control" value="@dat.ToString("yyy-MM-dd")" />
+                <button id="search" type="submit" class="btn btn-primary col-2">تـأكيـد</button>
+            </div>
+        </div>
+
+        <div>
+            @if (ViewBag.IsNull)
+            {
+
+            }
+            else if (Model.Count() == 0)
+            {
+                <p class="text-danger"> لم يفلح في عملية البحث</p>
+            }
+            else
+            {
+                var x = 0;
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المتبرع</th>
+                            <th>الجوال</th>
+                            <th>الحي</th>
+                            <th>تاريخ الموعد</th>
+                            <th>التبرعات</th>
+                            <th>الملاحظات</th>
+                            <th>اسم السائق</th>
+                            <th style="width:20%">حالة الموعد</th>
+                            <th>حجز بواسطة</th>
+                            <th></th>
+                        </tr>
+
+
+                        @foreach (var item in Model)
+                        {
+                            x += 1;
+
+                    <tr class="text-white-50">
+                        <td>@x</td>
+                        <td>@item.Name</td>
+                        <td>@item.Mobily</td>
+                        <td>@item.Neighborhood</td>
+                        <td>@item.AppointmentDate.ToShortDateString()</td>
+                        <td>@item.Donation</td>
+                        <td>@item.Comments</td>
+                        <td>@item.DriverName</td>
+
+                        <td>
+                            @if (item.Status == SD.CompletedDone)
+                            {
+                                <i class="fa-solid fa-check text-success"></i>
+                            }
+                            else if (item.Status == SD.CancelDone)
+                            {
+                                <i class="fa-solid fa-xmark text-danger"></i>
+                                <p class="text-info"> @item.Notes </p>
+                            }
+                            else if (item.Status == SD.DriverDone)
+                            {
+                                <i class="fa-solid fa-xmark text-danger"></i>
+                                <p style="color:#b6ff00">لم يتم تنفيذه من قبل السائق</p>
+                            }
+                            else
+                            {
+                                <p style="color:#b6ff00">لم يتم اعتماده من قبل مسئول الحركة</p>
+                            }
+                        </td>
+                        <td>
+                            @item.UserName
+                        </td>
+
+                        @if (User.IsInRole(SD.ManagerUser))
+                        {
+                            <td class="text-center" style="width:150px">
+
+                                @if (string.IsNullOrEmpty(item.DriverName))
+                                {
+                                    <i class="fa-solid fa-ban text-warning"></i>
+                                }
+                                else
+                                {
+                                    <a asp-action="Completed" asp-controller="Reservationes"
+                                       asp-route-id="@item.Id"
+                                       asp-route-reservationPage="true"
+                                       asp-route-dat="@dat"
+                                       asp-area="Emplooye">
+                                        <i class="far fa-check-circle text-info"></i>
+                                    </a>
+
+                                    <span>|</span>
+
+                                    <a class="showDelete" data-id="@item.Id" data-dat="@dat" data-toggle="model" data-target="#exampleModalCenter">
+                                        <i class="fas fa-trash-alt text-danger"></i>
+                                    </a>
+                                }
+                            </td>
+                        }
+
+                    </tr>
+                        }
+
+
+                    </table>
+                </div>
+            }
+        </div>
+    </form>
+
+</div>
+
+
+<!-- Modal Delete -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
+     style="min-width:40%; max-width:50%; margin:1.75rem auto">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">سبب الحذف</h5>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-left">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="ContentDelete">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/js/CustomDateTimePicker.js"></script>
+
+    <script>
+
+        $(function () {
+
+            var URLDelete = '/Emplooye/Reservationes/GetDeleteAppointment';
+
+            $(".showDelete").click(function () {
+                var $buttonClick = $(this);
+                var id = $buttonClick.attr('data-id');
+                var dat = $buttonClick.attr('data-dat');
+                $.ajax({
+                    type: "GET",
+                    url: URLDelete,
+                    contents: "text/html;charset=utf-8",
+                    data: { "id": id, "dat": dat },
+                    cache: false,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#ContentDelete').html(data);
+                        $('#exampleModalCenter').modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic Contet Load Faild");
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
+}

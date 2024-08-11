@@ -1,0 +1,402 @@
+
+/** {
+    text-decoration: none;
+    font-family: Arial;
+    box-sizing: border-box;
+}*/
+
+/*body {
+    background-image: linear-gradient(to bottom,#cc2b5e,#753a88);
+    background-image: linear-gradient( to bottom, #808080, transparent);
+    background-image: linear-gradient(to left, #9999, white);
+}
+*/
+section.section-1, section.section-2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: white;
+}
+
+div.block-1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+    div.block-1 div:first-child {
+        margin-right: 40px;
+    }
+
+div.social-btn a i {
+    font-size: 22px;
+    margin: 10px;
+    color: #808080;
+}
+
+div.social-btn a i:hover {
+        color: steelblue;
+}
+
+div.phone-appintment {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+div.phone-number {
+    font-size: 18px;
+    padding: 5px 10px;
+    border: 1px solid #808080;
+    border-radius: 20px;
+}
+
+    div.phone-number i {
+       /* transform: scale3d();*/
+        color: darkgreen
+    }
+
+/*div.appointment button {
+    border: none;
+    background-color: #00ab67;
+    font-size: 22px;
+    color: cornsilk;
+    outline: none;
+    padding: 10px 12px;
+    border-radius: 30px;
+    margin: 0px 15px;
+    transition: box-shadow 0.5s;
+}*/
+
+div.appointment button {
+    border: none;
+    font-size: 24px;
+    color: darkgreen;
+    outline: none;
+    padding: 10px 12px;
+    border-radius: 30px;
+    margin: 0px 15px;
+    transition: box-shadow 0.5s;
+}
+
+
+    div.appointment button:hover {
+        box-shadow: 0px 0px 10px green;
+    }
+
+@media screen and (max-width:768px) and (min-width:426px) {
+    section.section-1 {
+        font-size: 14px;
+    }
+
+    div.block-1 {
+        flex-direction: column;
+    }
+
+    div.social-btn a i {
+        font-size: 16px;
+    }
+
+    section.section-2 {
+        flex-direction: column;
+        padding-bottom: 12px;
+    }
+
+    div.appointment button {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width:425px) {
+    section.section-1 {
+        font-size: 14px;
+        flex-direction: column;
+    }
+
+    div.social-btn a i {
+        font-size: 16px;
+    }
+
+    section.section-2 {
+        flex-direction: column;
+        padding-bottom: 12px;
+    }
+
+    div.phone-number {
+        font-size: 16px;
+    }
+
+    div.appointment button {
+        font-size: 14px;
+    }
+}
+
+
+
+.bg-custom-1 {
+    background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+}
+
+.bg-custom-2 {
+    background-color: #00ab67;
+}
+
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: Calibri;
+}
+
+/*نوع خط العناوين */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 22px;
+    color: aliceblue;
+    font-family: 'FontAwesome';
+    font-family: revert;
+    color: snow;
+}
+
+
+.webBackground {
+    background-image: url('../images/bgPage.jpg');
+}
+
+
+/*.whiteBackround {
+    background-color: white;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    transform-style: preserve-3d;
+}*/
+
+.whiteBackround {
+    background-color: white;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    margin-top: -44px;
+    position: relative;
+}
+
+.menu-filter-list li {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px 20px 10px;
+    text-transform: uppercase;
+    background: #f5f5f5;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 13px;
+    -moz-animation: all 0.3s;
+    transition: all 0.3s;
+    font-family: 'Arabic Typesetting'
+}
+
+    .menu-filter-list li.is-checke, .menu-filter-list li:hover {
+        background-color: #545b62;
+        color: #fff;
+    }
+
+/*تم اخذها من البوستراب وتم التعديل عليها*/
+.form-control:disabled, .form-control[readonly] {
+    background-color: white;
+    opacity: 1;
+}
+
+/*تم اخذها من البوستراب وتم التعديل عليها*/
+/*عشان عرض المودل بنسبة 70% بدلا من 500px*/
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 70%;
+        margin: 1.75rem auto;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1181px;
+    }
+}
+
+.topnav a:hover {
+    border-bottom: 3px solid red;
+    background-color: !important greenyellow;
+}
+
+
+.branch {
+    padding-bottom: 4.5rem;
+}
+
+
+/*Start section*/
+.upper-bar {
+    background-color: #00ab67;
+    color: #FFF;
+}
+
+    .upper-bar .info {
+        margin: 15px 0;
+    }
+
+@media(max-width: 576px) {
+    .upper-bar .info:first-child {
+        margin-bottom: 0
+    }
+}
+
+.upper-bar span {
+    color: #bfc6c9
+}
+
+.upper-bar .get-quote {
+    display: inline-block;
+    border: 1px solid #ec1c23;
+    padding: 2px 10px;
+    margin-left: 20px
+}
+
+@media(max-width: 576px) {
+    .upper-bar .get-quote {
+        border: none;
+        margin-left: 5px
+    }
+}
+/*End section*/
+
+/*صفحة التسجيل */
+.gradient-custom {
+    /* fallback for old browsers */
+    background: #f093fb;
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1));
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1))
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+/*نهاية صفحة التسجيل */
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+
+
+.group div[role=checkbox] {
+    margin: 0;
+    padding: 0;
+    border: 2px transparent solid;
+    margin-bottom: .5em;
+    margin-top: .5em;
+}
+
+.group label {
+    display: block;
+    border: thin transparent solid;
+    margin-left: 18px;
+}
+
+.group div[role=checkbox]:hover,
+label:hover {
+    border-color: #777;
+}
+
+.group div[role=checkbox].focus,
+label.focus {
+    border-color: black;
+}
+
+.checkbox {
+    padding-left: 10px;
+}
+
+#ex1, #ex2, #ex3 {
+    background-color: #F1F1F1;
+    padding: 10px;
+}
+
+fieldset {
+    border-style: none;
+}

@@ -1,0 +1,109 @@
+﻿@model IEnumerable<UserViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">قائمة المستخدمين</h2>
+        </div>
+
+        <div class="col-6 text-left">
+            <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">
+                <i class="fas fa-plus"></i> &nbsp; تسجيل موظف جديد
+            </a>
+        </div>
+    </div>
+
+    <form method="get">
+        <div class="container border border-secondary mb-3">
+            <div class="row container">
+                <div class="input-group mb-3" style="padding-top:10px">
+                    <input type="text" class="form-control" placeholder="searchName ..." name="searchName">
+                    <input type="text" class="form-control" placeholder="searchPhone ..." name="searchPhone">
+                    <input type="text" class="form-control" placeholder="searchEmail ..." name="searchEmail">
+                    <input type="text" class="form-control" placeholder="searchBranch ..." name="searchBranch">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    @{ 
+        int x = 0;
+    }
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr class="bg-primary text-white">
+                <th>#</th>
+                <th>اسم الفرع</th>
+                <th>اسم الموظف</th>
+                <th>الايميل</th>
+                <th>نوع المستخدم</th>
+                <th>صلاحيات الموظف</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                x += 1;
+            <tr>
+                <td>@x</td>
+                <td>@user.BranchName</td>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>@user.UserType</td>
+                <td>@string.Join(",", user.Roles.ToList())</td>
+                <td class="text-left" style="width:500px">
+                    <div class="btn-group" role="group">
+
+                        @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
+                        {
+                            <a class="btn btn-success" asp-action="LouckUnLock" asp-route-id="@user.Id"><i class="fas fa-lock-open"></i></a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger" asp-action="LouckUnLock" asp-route-id="@user.Id"><i class="fas fa-lock"></i></a>
+                        }
+
+                        @*<a asp-action="Details" class="btn btn-success text-white" asp-route-id="@Model"><i class="fas fa-list-alt"></i></a>*@
+
+                        <a asp-action="EditUser" class="btn btn-primary text-white" asp-route-id="@user.Id"><i class="fas fa-edit"></i> </a>
+
+                        <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                            <span id="deleteSpan_@user.Id">
+                                <a onclick="ConfirmDelete('@user.Id', true)"
+                                   href="#" class="btn btn-danger text-white">
+                                    <i class="far fa-trash-alt"></i>
+                                </a>
+                            </span>
+                            <span id="confirmDeleteSpan_@user.Id" style="display:none">
+                                <span style="font-size:13px">هل أنت متأكد من حذف بيانات المستخدم?</span>
+                                <button type="submit" class="btn btn-danger text-white">Yes</button>
+                                <a href="#" class="btn btn-primary text-white" onclick="ConfirmDelete('@user.Id', false)">
+                                    No
+                                </a>
+                            </span>
+                        </form>
+
+                        <br />
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script src="~/js/customScript.js"></script>
+}
+
+

@@ -1,0 +1,192 @@
+﻿@model List<DistributeViewModel>
+
+@{
+    ViewData["Title"] = "ViewDistribution";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="whiteBackround border">
+
+    <form method="get">
+
+        <input type="text" id="maxdate" value="@Model[0].MaxDate" style="display:none">
+
+        @{
+
+            string d = ViewBag.dat;
+
+            DateTime dateTime = DateTime.Now;
+
+            if (d != null)
+            {
+                dateTime = DateTime.Parse(d);
+            }
+            else
+            {
+                dateTime = DateTime.Now;
+            }
+        }
+
+        @if (ViewBag.IsSuccess == true)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>رسالة تأكيد ! &nbsp; </strong> تمت عملية التوزيع بنجاح ...
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-6">
+                <h2 class="text-info">توزيع المواعيد</h2>
+            </div>
+
+            <div class="col-6 text-left mb-1">
+
+            </div>
+        </div>
+
+        <div class="container border border-secondary mb-1" style="height:60px">
+            <div class="row container">
+                <div class="input-group mb-3" style="padding-top:10px">
+                    <input type="text" name="date" class="datepicker form-control" aria-describedby="button-addon1"
+                           value="@dateTime.ToString("yyy-MM-dd")" />
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fa fa-calendar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <form method="post" asp-action="ViewDistribution">
+
+        @{
+            int x = 0;
+        }
+
+        <div>
+
+            @if (Model[0].Reservations == null)
+            {
+                <p class="text-danger">لا توجد مواعيد مسجلة</p>
+            }
+            else
+            {
+
+                <div class="row mb-1">
+                    <div class="col-6">
+
+                    </div>
+
+                    <div class="col-6 text-left">
+                        <input type="submit" class="btn btn-primary" value="حفظ الكل" />
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped border" id="tb">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    اسم المتبرع
+                                </th>
+                                <th>
+                                    اسم الحي
+                                </th>
+                                <th>
+                                    التبرعات
+                                </th>
+                                <th>
+                                    الملاحظات
+                                </th>
+                                <th>
+                                    اسم السائق
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                ++x;
+                                <tr class="m-0">
+                                    <td class="text-muted">
+                                        @x
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => Model[i].Reservations.Customers.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => Model[i].Reservations.Customers.Neighborhoods.Name)
+                                    </td>
+                                    <td class="align-top">
+                                        @Html.DisplayFor(m => Model[i].Reservations.Donation)
+                                    </td>
+                                    <td>
+                                        @if (Model[i].Reservations.Comments != null)
+                                        {
+                                            @Html.DisplayFor(m => Model[i].Reservations.Comments)
+                                        }
+                                        else
+                                        {
+                                        <span class="text-secondary"> لم تسجل أي ملاحظات </span> 
+                                        }
+
+                                    </td>
+                                    <td class="align-top">
+                                        <div class="input-group mb-3">
+                                            <select class="form-control code" onchange="getCount()"
+                                                    asp-for="@Model[i].Reservations.DriverId"
+                                                    asp-items="@(new SelectList(Model[i].applicationUsersList,"Id","Name"))">
+                                                <option value="">اختيار اسم السائق ...</option>
+                                            </select>
+                                            <span asp-validation-for="@Model[i].Reservations.DriverId" class="text-danger"></span>
+                                        </div>
+                                    </td>
+                                    <td class="badge badge-light badge-pill text-danger font-weight-bold p-0" style="font-size:16px">
+                                      
+                                    </td>
+                                    <td style="display:none">
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Id" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.AppointmentDate" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Donation" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Comments" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.CreateOn" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.UpdateOn" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.IsDelete" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.CommentsDelete" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.BranchId" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.CustId" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.UserId" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Priod" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Notes" />
+                                        <input type="hidden" asp-for="@Model[i].Reservations.Status" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </form>
+
+    <p id="demo"></p>
+
+</div>
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DateScriptsPartial" />
+    <script src="~/js/CountDistribution.js"></script>
+}

@@ -1,0 +1,42 @@
+﻿@model Branches
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تفاصيل بيانات الفرع</h2>
+    <br />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Message" class="form-label"></label>
+        <textarea asp-for="Message" readonly class="form-control" style="height:100px"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MaxDate" class="form-label"></label>
+        <input asp-for="MaxDate" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-4">
+            <partial name="_EditAndBackToListButtonPartial" model="@Model.Id" />
+        </div>
+    </div>
+
+</div>

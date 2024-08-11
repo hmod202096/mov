@@ -1,0 +1,26 @@
+﻿@model UserTypes
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تفاصيل بيانات النوع</h2>
+    <br />
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label"></label>
+        <input asp-for="Type" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-4">
+            <partial name="_EditAndBackToListButtonPartial" model="@Model.Id" />
+        </div>
+    </div>
+
+</div>

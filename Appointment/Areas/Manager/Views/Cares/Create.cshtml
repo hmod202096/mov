@@ -1,0 +1,55 @@
+﻿@model CarAndCarTypeViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-info">اضافة سيارة جديدة</h2>
+<br />
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<form asp-action="Create" method="post">
+    <div class="whiteBackround border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="Cares.BranchId" />
+
+        <div class="mb-3">
+            <label asp-for="Cares.PlatId" class="form-label"></label>
+            <input asp-for="Cares.PlatId" class="form-control">
+            <span asp-validation-for="Cares.PlatId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Cares.model" class="form-label"></label>
+            <input asp-for="Cares.model" class="form-control">
+            <span asp-validation-for="Cares.model" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Cares.TypeId" class="form-label"></label>
+            <select asp-for="Cares.TypeId" class="form-control"
+                    asp-items="@(new SelectList(Model.CareTypesList,"Id","Name"))">
+            </select>
+            <span asp-validation-for="Cares.TypeId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_CreateAndBackToListButtonPartial" />
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,126 @@
+﻿@model List<ReservationAvailableViewModel>
+
+@{
+    ViewData["Title"] = "Available";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    string dateTime = null;
+}
+
+<div class="whiteBackround">
+
+    <h3 class="card-title text-right text-muted" style="border-bottom-style:groove">المواعيد المتاحة</h3>
+
+    <div class="py-2">
+        <div class="row">
+
+            @foreach (var item in Model)
+            {
+
+                dateTime = item.Gregorian.ToString();
+
+                <div class=" col-sm-4 p-1">
+
+                    <div class="card ">
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>@item.Gregorian.ToString("dd/MM/yyyy")</div>
+                            <div>@item.Hijri</div>
+                            <div>@item.DayName</div>
+                        </div>
+
+                        @if (item.Available > 0)
+                        {
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>المسموح به : @item.CountBooking</div>
+                                <div>المتاحة حالياً : @item.Available</div>
+                            </div>
+
+                            <div class="card-footer d-flex justify-content-around">
+                                <a href="#">
+                                    <i class="fa-regular fa-eye text-success"></i>
+                                </a>
+                                <span>|</span>
+                                <a class="showMobily" id="@item.Gregorian.Date" onClick="reply_click(this.id)">
+                                    <i class="fa-solid fa-plus" id="myP"></i>
+                                </a>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="card-body text-center text-danger bg-light">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+
+                            <div class="card-footer d-flex justify-content-around">
+                                <a href="#">
+                                    <i class="fa-regular fa-eye text-success"></i>
+                                </a>
+                                <span>|</span>
+                                <a href="#">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--Model Show Mobily-->
+<form method="get">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+         style="min-width:50%; max-width:40%; margin:1.75rem auto">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-light justify-content-center">
+                    <h5 class="modal-title">أدخل جوال المتبرع</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="col-md-10 col-sm-12">
+                            <input id="demoMobily" asp-for="@Model.FirstOrDefault().Mobily" class="form-control m-1">
+                            <span asp-validation-for="@Model.FirstOrDefault().Mobily" class="text-danger"></span>
+
+                            <!--تمرير براميتر التاريخ-->
+                            <input id="demoDate" asp-for="@Model.FirstOrDefault().DateTime" class="form-control m-1" style="display:none">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit"
+                            asp-action="Create"
+                            asp-route-mobily="@Model.FirstOrDefault().Mobily"
+                            asp-route-dateTime="@Model.FirstOrDefault().DateTime"
+                            class="btn btn-primary">
+                        ادخال
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        function reply_click(clicked_id) {
+            let html = clicked_id;
+            document.getElementById("demoMobily").value = "";
+            document.getElementById("demoDate").value = html;
+
+            $('#exampleModal').modal('show');
+        }
+
+    </script>
+}

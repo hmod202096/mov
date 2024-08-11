@@ -1,0 +1,37 @@
+﻿@model CareTypes
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-info">انشاء نوع جديد</h2>
+<br />
+
+<form asp-action="Create" method="post">
+    <div class="whiteBackround border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_CreateAndBackToListButtonPartial" />
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

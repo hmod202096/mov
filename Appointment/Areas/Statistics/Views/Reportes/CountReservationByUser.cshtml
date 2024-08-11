@@ -1,0 +1,106 @@
+﻿@model List<CountAppByUserViewModel>
+
+@{
+    ViewData["Title"] = "CountReservationByUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="whiteBackround border">
+
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-info text-center">عدد المواعيد حسب المستخدمين</h2>
+        </div>
+    </div>
+    <hr />
+
+    <form method="get">
+        @{
+            DateTime fromDate;
+            DateTime toDate;
+            fromDate = DateTime.Parse(ViewBag.d1);
+            toDate = DateTime.Parse(ViewBag.d2);
+        }
+
+        <div class="form-group row">
+            <label for="fromDate" class="col-sm-2 col-form-label">من تاريخ :</label>
+            <div class="col-sm-10">
+                <input id="d1" type="text" name="fromDate" class="datepicker form-control" value="@fromDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="toDate" class="col-sm-2 col-form-label">إلى تاريخ :</label>
+            <div class="col-sm-10">
+                <input id="d2" type="text" name="toDate" class="datepicker form-control" value="@toDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2">
+
+            </div>
+            <div class="col-sm-10">
+                <button id="search" type="submit" class="btn btn-primary">تنفيذ</button>
+            </div>
+        </div>
+    </form>
+
+
+
+    <div>
+
+        @if (Model.Count() == 0)
+        {
+            <p class="text-danger text-center"> لا توجد سجلات .....</p>
+        }
+        else
+        {
+            var x = 0;
+
+            <div class="container">
+                <h2 class="text-muted">تقرير : </h2>
+                <h4>ملخص عن عدد المواعيد التي تم حجزها من قبل المستخدم حسب التاريخ المحدد :</h4>
+
+                <table class="table table-bordered table-dark" style="border-top: 1px solid #dee2e6;">
+                    <thead style="font-size: larger; font-weight: bold;">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">اسم الموظف</th>
+                            <th scope="col" style="text-align: center">عدد المواعيد</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.FirstOrDefault().Branches)
+                        {
+                            var branch = item.Name;
+                          
+                        <tr class="text-muted bg-light text-center h4">
+                            <td colspan="3">@branch</td>
+                        </tr>
+                            @foreach (var gr in Model.Where(x => x.BranchName == branch))
+                            {
+                                x += 1;
+                                <tr>
+                                    <th scope="row">@x</th>
+                                    <td>@gr.EmpName</td>
+                                    <td class="text-center">@gr.CountApp</td>
+                                </tr>
+                            }
+                            <tr class="text-center h6" style="color:chartreuse">
+                                <td colspan="2">إجمالي عدد المواعيد</td>
+                                <td colspan="1">@Model.Where(x => x.BranchName == branch).Sum(m => m.CountApp)</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+    <script src="~/js/CustomDateTimePicker.js"></script>
+    <script src="~/js/CompareDate .js"></script>
+}

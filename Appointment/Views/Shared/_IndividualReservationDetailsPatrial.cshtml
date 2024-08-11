@@ -1,0 +1,129 @@
+﻿@model ReservationDetailesViewModel
+
+
+<div class="container border" style="min-width:100%; border-radius:10px">
+    <br />
+
+    <div class="row">
+
+        <div class="col-12 col-md-4" style="border-left :1px solid #bbb9b9">
+
+            <h4 class="d-flex justify-content-between align-content-center mb-3">
+                <span class="text-muted">رقم المتبرع :</span>
+                <span class="badge badge-secondary badge-pill">@Model.Reservations.CustId</span>
+            </h4>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="Reservations.Customers.Name" class="col-form-label"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="Reservations.Customers.Name" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="Reservations.Customers.Mobily" class="col-form-label"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="Reservations.Customers.Mobily" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-3">
+                    <label asp-for="Reservations.Customers.Neighborhoods.Name" class="col-form-label"></label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="Reservations.Customers.Neighborhoods.Name" class="form-control" readonly />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-md-8">
+
+            <h4 class="d-flex justify-content-between align-content-center mb-3">
+                <span class="text-muted">رقم الحجز :</span>
+                <span class="badge badge-secondary badge-pill">@Model.Reservations.Id</span>
+            </h4>
+
+            <ul class="list-group mb-3">
+
+                <li class="list-group-item active" aria-current="true">تفاصيل الموعد</li>
+
+              
+
+                <li class="list-group-item">
+                    <span class="text-info"> التبرعات : </span>
+                    <span class="text-muted">
+                        <textarea asp-for="Reservations.Donation" class="form-control" style="height:100px"></textarea>
+                    </span>
+                </li>
+
+
+                @{
+                    var comments = Model.Reservations.Comments;
+                    if (comments == null || comments.Trim().Length == 0)
+                    {
+                        Model.Reservations.Comments = "لم يتم تسجيل أي ملاحظات";
+                    }
+                }
+
+                <li class="list-group-item">
+                    <span class="text-info"> الملاحظات : </span>
+                    <span class="text-muted">@Model.Reservations.Comments</span>
+                </li>
+
+                  <li class="list-group-item">
+                    <span class="text-info"> تاريخ الموعد : </span>
+                    <span class="text-muted">@Model.Reservations.AppointmentDate.Date.ToShortDateString()</span>
+                </li>
+
+
+                <li class="list-group-item">
+                    <span class="text-info"> التنفيذ : </span>
+                    @{
+                        var status = Model.Reservations.Status;
+
+                        if (status == SD.BookingDone)
+                        {
+                            status = "لم ينفذ من قبل المسؤول";
+                        }
+                        else if (status == SD.DriverDone)
+                        {
+                            status = "لم ينفذ من قبل السائق";
+                        }
+                        else
+                        {
+                            status = Model.Reservations.Notes;
+                        }
+                    }
+
+                    <span class="text-muted"> @status </span>
+                </li>
+
+
+                <li class="list-group-item">
+                    <div class="row text-center">
+                        <div class="col"> <span class="text-info">اسم الفرع</span></div>
+                        <div class="col"> <span class="text-info">اسم السائق</span></div>
+                        <div class="col"> <span class="text-info">وقت التسجيل</span></div>
+                        <div class="col"> <span class="text-info">تم الحجز بواسطة</span> </div>
+                        <div class="w-100"></div>
+                        <div class="col"> @Model.Reservations.Branches.Name</div>
+                        @*<div class="col">@Model.Reservations.ApplicationUserDriver.Name</div>*@
+                        <div class="col">
+                            @(string.IsNullOrEmpty(Model.Reservations.DriverId) ? "لم يسند له سائق" : Model.Reservations.ApplicationUserDriver.Name)
+                        </div>
+                        <div class="col">@Model.Reservations.CreateOn</div>
+                        <div class="col"> @Model.Reservations.ApplicationUser.Name</div>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>

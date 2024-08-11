@@ -1,0 +1,154 @@
+﻿@model IEnumerable<SearchViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<form method="get">
+
+    <div class="whiteBackround border">
+
+        <div class="row">
+            <div class="col-6">
+                <h2 class="text-info">قائمة البحــث</h2>
+            </div>
+
+            <div class="col-6">
+
+            </div>
+        </div>
+
+        <div class="container border border-secondary mb-3" style="height:60px">
+            <div class="row container">
+                <div class="input-group mb-3" style="padding-top:10px">
+                    <input type="text" class="form-control" placeholder="searchName ..." name="term">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+
+            @if (ViewBag.IsNull)
+            {
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden"></span>
+                </div>
+                <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden"></span>
+                </div>
+            }
+            else if (Model.Count() == 0)
+            {
+                <p class="text-danger"> لم يفلح في عملية البحث</p>
+            }
+            else
+            {
+                @foreach (var gr in Model)
+                {
+                    <div class="container">
+                        <div class="row mb-1 text-white text-center p-1" style="background: darkcyan">
+                            <div class="col">
+                                <h5><span class="text-warning">اسم المتبرع : </span>@gr.Name</h5>
+                            </div>
+                            <div class="col">
+                                <h5><span class="text-warning">رقم الجوال : </span>@gr.Mobily</h5>
+                            </div>
+                            <div class="col">
+                                <h5><span class="text-warning">اسم الحي : </span>@gr.Neighporhood</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle table-bordered table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>
+                                        تاريخ الحجز
+                                    </th>
+                                    <th>
+                                        تاريخ التسجيل
+                                    </th>
+                                    <th>
+                                        السائق
+                                    </th>
+                                    <th>
+                                        التنفيذ
+                                    </th>
+                                    <th>
+                                        الفرع
+                                    </th>
+                                    <th>
+                                        المستخدم
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in gr.Reservations)
+                                {
+                                <tr>
+                                    <td>
+                                        <span> @item.AppointmentDate.Date.ToString("dd/MM/yyyy")</span> &nbsp; &nbsp;
+
+                                        @*<span>@item.AppointmentDate.Date.ToString("dd/MM/yyyy", new System.Globalization.CultureInfo("ar-SA"))</span> &nbsp; &nbsp;
+            <span>@item.AppointmentDate.Date.Date.ToString("dddd", new System.Globalization.CultureInfo("ar-SA"))</span>*@
+                                    </td>
+                                    <td>
+                                        @item.CreateOn.ToShortDateString()
+                                    </td>
+
+                                    <td class="align-top">
+                                        @if (item.ApplicationUserDriver != null)
+                                        {
+                                            @item.ApplicationUserDriver.Name
+                                        }
+                                        else
+                                        {
+                                            <p class="text-danger">لم يسند له سائق</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.Status == SD.CompletedDone)
+                                        {
+                                            <span>منفذ</span>
+                                        }
+                                        else if (item.Status == SD.CancelDone)
+                                        {
+                                            <span>محذوف من قبل السائق</span>
+                                            <br />
+                                            @item.Notes
+                                        }
+                                        else if (item.Status == SD.DriverDone)
+                                        {
+                                            <span>لم يتم تنفيذه من قبل السائق</span>
+                                        }
+                                        else
+                                        {
+                                            <span>لم يتم تنفيذه من قبل مسؤول الحركة</span>
+                                        }
+                                    </td>
+                                    <td class="align-content-lg-center">
+                                        @item.Branches.Name
+                                    </td>
+                                    <td class="align-content-lg-center">
+                                        @item.ApplicationUser.Name
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+
+        </div>
+
+    </div>
+
+</form>
+

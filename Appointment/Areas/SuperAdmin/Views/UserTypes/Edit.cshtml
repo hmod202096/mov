@@ -1,0 +1,40 @@
+﻿@model UserTypes
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تعديل نوع المستخدم</h2>
+    <br />
+
+    <form asp-action="Edit" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Type" class="form-label"></label>
+            <input asp-for="Type" class="form-control">
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_UpdateAndBackToListButtonPartial" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

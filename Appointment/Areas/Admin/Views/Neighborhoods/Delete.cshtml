@@ -1,0 +1,42 @@
+﻿@model NeighborhoodOperationViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">حذف بيانات الحي</h2>
+    <br />
+
+    <form asp-action="Delete" method="post">
+
+
+        @Html.HiddenFor(m => m.Neighborhoods.Id)
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Neighborhoods.Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Neighborhoods.Name" readonly class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+
+            </div>
+            <div class="col-5">
+                <partial name="_DeleteAndBackToListButtonPartial" />
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

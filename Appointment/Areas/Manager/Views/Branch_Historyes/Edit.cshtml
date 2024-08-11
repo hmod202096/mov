@@ -1,0 +1,88 @@
+﻿@model List<Branch_HistoryDateViewModel>
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="whiteBackround border">
+
+    <form method="post">
+
+        @if (ViewBag.Success == true)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>رسالة تأكيد ! &nbsp; </strong> تمت عملية التعديل بنجاح ...
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @{
+            int x = 0;
+        }
+
+        <div class="row mb-3">
+            <div class="text-start">
+                <input type="submit" class="btn btn-primary" value="حفظ الكل" />
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        التاريخ الميلادي
+                    </th>
+                    <th>
+                        تاريخ أم القرى
+                    </th>
+                    <th>
+                        اليوم
+                    </th>
+                    <th>
+                        عدد الحجوزات المسموح بها
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    ++x;
+                    <tr>
+                        <td>
+                            @x
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model[i].GregorianDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model[i].IslamicHistory)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model[i].Day)
+                        </td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].HistoryDateId" />
+                            <input type="hidden" asp-for="@Model[i].BranchId" />
+                            <input asp-for="@Model[i].CountBooking" class="form-control" maxlength="2" />
+                            <span asp-validation-for="@Model[i].CountBooking" class="text-danger"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

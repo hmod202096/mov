@@ -1,0 +1,55 @@
+﻿@model Branches
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تعديل بيانات الفرع</h2>
+    <br />
+
+    <form asp-action="Edit" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Message" class="form-label"></label>
+            <textarea asp-for="Message" class="form-control" style="height:100px"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MaxDate" class="form-label"></label>
+            <input asp-for="MaxDate" class="form-control">
+            <span asp-validation-for="MaxDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_UpdateAndBackToListButtonPartial" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

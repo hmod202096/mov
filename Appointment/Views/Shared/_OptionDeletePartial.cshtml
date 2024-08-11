@@ -1,0 +1,35 @@
+﻿@using Appointment.Enums
+@model OptionDeleteAppointmentViewModel
+
+
+<!-- Modal Delete -->
+<form asp-action="CancelReservation" asp-controller="Reservationes" asp-area="Emplooye" asp-route-id="@Model.Id"  asp-route-dat="@Model.Dat">
+
+    <div class="modal-body">
+
+
+        <div class="form-group">
+            <label asp-for="Notes" class="control-label"></label>
+            <select asp-for="Notes" class="form-control"
+                    asp-items="Html.GetEnumSelectList<OptionDeleteEnum>()">
+                <option value="">قائمة التحديد ...</option>
+            </select>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+    </div>
+</form>
+
+
+
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+

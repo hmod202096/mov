@@ -1,0 +1,39 @@
+﻿@model NeighborhoodOperationViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-info">انشاء حي جديد</h2>
+<br />
+
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<form asp-action="Create" method="post">
+    <div class="whiteBackround border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Neighborhoods.Name" class="col-form-label"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Neighborhoods.Name" class="form-control" />
+                <span asp-validation-for="Neighborhoods.Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                
+            </div>
+            <div class="col-5">
+                <partial name="_CreateAndBackToListButtonPartial" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Customers>
+
+@{
+    ViewData["Title"] = "CustometAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">قائمة المتبرعين</h2>
+        </div>
+
+        <div class="col-6 text-left mb-1">
+
+        </div>
+    </div>
+
+    <div class="col-12 border p-3">
+        <table id="DT_Load" class="table table-striped border">
+            <thead>
+                <tr>
+                    <th class="text-right">الرقم</th>
+                    <th class="text-right">اسم المتبرع</th>
+                    <th class="text-right">الهاتف</th>
+                    <th class="text-right">اسم الحي</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/js/CustomerList.js"></script>
+}

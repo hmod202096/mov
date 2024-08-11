@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="whiteBackround">
+
+
+    @if (ViewBag.Message != null)
+    {
+        <section class="r" style="text-align:left">
+            <marquee width="100%" direction="right">
+                <h4>
+                    <span class="text-danger">
+                       @ViewBag.Message
+                    </span>
+                </h4>
+            </marquee>
+        </section>
+    }
+
+    <div>
+        <img src="~/images/mov.jpg" class="rounded mx-auto d-block" style="width:100%" alt="Cinque Terre">
+    </div>
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        $(function myFunction() {
+            var winH = $(window).height(),
+                navs1 = $('.section-1').innerHeight(),
+                navs2 = $('.section-2').innerHeight(),
+                navs3 = $('.r').innerHeight(),
+                navH = $('.navbar').innerHeight(),
+                footerH = $('.footer').innerHeight();
+
+            $('.whiteBackround').height(winH - (navs1 + navs2 + navs3 + navH + footerH));
+
+            $('.rounded').height(winH - (navs1 + navs2 + navs3 + navs3 + navH + footerH));
+
+        });
+    </script>
+}

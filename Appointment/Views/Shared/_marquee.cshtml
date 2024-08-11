@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@inject Appointment.Service.ISessionExtensions _sessionExtensions
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+
+
+
+@if (_signInManager.IsSignedIn(User))
+{
+
+    var branch = await _sessionExtensions.GetBranch(HttpContextAccessor.HttpContext.Session);
+
+
+    <style>
+        .r {
+            text-align: left;
+        }
+    </style>
+
+
+    <section class="r">
+        <marquee width="60%" direction="right">
+            <span class="text-danger">
+                @branch.Message
+            </span>
+        </marquee>
+    </section>
+
+
+}

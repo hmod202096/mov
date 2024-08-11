@@ -1,0 +1,146 @@
+﻿@model ReservationOperationViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+
+    <div class="whiteBackround">
+
+        <div class="card border mb-3">
+
+            <div class="card-header bg-dark border-success text-light">
+                <div class="row">
+                    <div class="col-6">
+                        <i class="fa-solid fa-calendar-check"></i>&nbsp; حجز موعد جديد
+                    </div>
+                    <div class="col-6 text-left">
+                        <a class="btn btn-outline-info btn-sm" asp-action="Index" asp-controller="Reservationes" asp-area="Emplooye">
+                            الرجوع لعرض المواعيد
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <input type="hidden" asp-for="Reservations.BranchId" />
+            <input type="hidden" asp-for="Reservations.UserId" />
+            <input type="hidden" asp-for="Customers.Mobily" />
+
+            @*تمرير براميتر أعلى ظهور للتاريخ*@
+            <input type="text" id="maxdate" value="@Model.MaxDate" style="display:none">
+
+            @if (!string.IsNullOrEmpty(Model.Customers.Name))
+            {
+                <input type="hidden" asp-for="Customers.Name" />
+                <input type="hidden" asp-for="Customers.NeighId" />
+            }
+
+
+
+
+            <div class="card-body text-success">
+
+                <h4 class="card-title text-left text-muted" style="border-bottom-style:groove">بيانات العميل</h4>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="txtName">اسم العميـل : </label>
+                        <input asp-for="Customers.Name" class="form-control" id="txtName" placeholder="اسم العميـل">
+                        <span asp-validation-for="Customers.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtPhone">رقم الجــوال :</label>
+                        <input asp-for="Customers.Mobily" class="form-control" id="txtPhone" placeholder="رقم الجــوال">
+                        <span asp-validation-for="Customers.Mobily"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="neigh">اسم الحي : </label>
+                        <select asp-for="Customers.NeighId" id="neigh"
+                                asp-items="@(new SelectList(Model.Neighborhoods,"Id","Name"))" class="form-control">
+                            <option value="">اختيار اسم الحي ...</option>
+                        </select>
+                        <span asp-validation-for="Customers.NeighId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="">الفتـرة : </label>
+                        <select class="form-control"
+                                asp-for="Reservations.Priod"
+                                asp-items="Html.GetEnumSelectList<Reservations.Epriod>()">
+                        </select>
+                        <span asp-validation-for="Reservations.Priod" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <h4 class="card-title text-left text-muted" style="border-bottom-style:groove">بيانات الموعد</h4>
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-6">
+                        <label for="txtDate">التــاريخ :</label>
+                       
+                        <input type="text" 
+                               asp-for="Reservations.AppointmentDate" 
+                               class="datepicker form-control"
+                               onchange="checkTheNumber()"
+                               aria-describedby="button-addon1"
+                               value="@Model.Reservations.AppointmentDate.ToString("yyy-MM-dd")" />
+
+                        <span asp-validation-for="Reservations.AppointmentDate" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtCount">تكـرار المـوعد :</label>
+                        <input asp-for="CountAppointment" id="txtCount" class="form-control" onchange="checkTheNumber()">
+                        <span asp-validation-for="CountAppointment" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="txtDonation">التبرعـات :</label>
+                        <textarea asp-for="Reservations.Donation" id="txtDonation" class="form-control" style="height:100px"></textarea>
+                        <span asp-validation-for="Reservations.Donation" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="txtNote">الملاحظات ان وجدت : </label>
+                        <textarea asp-for="Reservations.Comments" class="form-control" id="txtNote" style="height:100px"></textarea>
+                        <span asp-validation-for="Reservations.Comments" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-footer border">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <input type="submit" id="sav" class="btn btn-primary form-control" value="حفظ" />
+                    </div>
+                    <div class="col-md-3">
+                        <a asp-action="Index" class="btn btn-success form-control">الرجوع للخلف</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DateScriptsPartial" />
+    <script src="~/js/TextPropDisabled.js"></script>
+    <script src="~/js/CheckCountAppointment.js"></script>
+}
+
+
+

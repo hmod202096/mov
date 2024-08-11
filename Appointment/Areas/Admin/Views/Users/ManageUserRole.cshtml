@@ -1,0 +1,42 @@
+﻿@model List<UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "ManageUserRole";
+}
+
+@{
+    var userId = ViewBag.UserId;
+}
+
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>إدارة صلاحيات المستخدم</h2>
+        </div>
+        <div class="card-body">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+
+                <input type="hidden" asp-for="@Model[i].RoleId" />
+                <input type="hidden" asp-for="@Model[i].RoleName" />
+
+                <div class="row mr-2">
+
+                    <div class="form-check">
+                        <input class="form-check-label" type="checkbox" asp-for="@Model[i].isSelected"> &nbsp; &nbsp; &nbsp;
+                        <label class="form-check-label" asp-for="@Model[i].isSelected">
+                            @Model[i].RoleName
+                        </label>
+                    </div>
+
+                </div>
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+            }
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="حفظ" class="btn btn-primary" style="width:auto" />
+            <a asp-action="EditUser" asp-route-id="@userId" class="btn btn-primary">الغاء الأمر</a>
+        </div>
+    </div>
+</form>

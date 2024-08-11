@@ -1,0 +1,35 @@
+[
+  {
+    "outputFileName": "wwwroot/css/Output.min.css",
+    "inputFiles": [
+      "wwwroot/css/mySction.css",
+      "wwwroot/css/mysite.css",
+      "wwwroot/css/site.css"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/js/Output.min.js",
+    "inputFiles": [
+      "wwwroot/js/CheckCountAppointment.js",
+      "wwwroot/js/CompareDate.js",
+      "wwwroot/js/CustomDateTimePicker.js",
+      "wwwroot/js/CustomerList.js",
+      "wwwroot/js/customScript.js",
+      "wwwroot/js/DateFunctions.js",
+      "wwwroot/js/DatePicker.js",
+      "wwwroot/js/RepeatDriver.js",
+      "wwwroot/js/site.js",
+      "wwwroot/js/TextPropDisabled.js",
+      "wwwroot/js/CountDistribution.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    }
+  }
+]

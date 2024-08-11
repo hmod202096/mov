@@ -1,0 +1,66 @@
+﻿@model RoleEditViewModel
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+    <div class="row">
+        <div class="col-6">
+            <h3 class="text-info">تعديل صلاحيات الموظفين</h3>
+        </div>
+
+        <div class="col-6 text-left mb-1">
+            <a asp-action="Index" class="btn btn-secondary">تراجع</a>
+        </div>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <form method="post">
+        <input type="hidden" name="roleName" value="@Model.Role.Name" />
+        <input type="hidden" name="roleId" value="@Model.Role.Id" />
+
+        <h2 class="bg-info p-1 text-white">اضافة صلاحية @Model.Role.Name</h2>
+        <table class="table table-bordered table-sm">
+            @if (Model.NonMembers.Count() == 0)
+            {
+                <tr><td colspan="2">جميع المستخدمين أعضاء</td></tr>
+            }
+            else
+            {
+                @foreach (ApplicationUser user in Model.NonMembers)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>
+                            <input type="checkbox" name="AddIds" value="@user.Id">
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+
+        <h2 class="bg-info p-1 text-white">الغاء صلاحية @Model.Role.Name</h2>
+        <table class="table table-bordered table-sm">
+            @if (Model.Members.Count() == 0)
+            {
+                <tr><td colspan="2">لا يوجد مستخدمون أعضاء</td></tr>
+            }
+            else
+            {
+                @foreach (ApplicationUser user in Model.Members)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>
+                            <input type="checkbox" name="DeleteIds" value="@user.Id">
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+        <button type="submit" class="btn btn-primary">حفظ</button>
+    </form>
+</div>
+

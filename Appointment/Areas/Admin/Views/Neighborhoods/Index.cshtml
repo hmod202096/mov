@@ -1,0 +1,80 @@
+﻿
+@model NeighborhoodViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="get">
+    
+    <div class="whiteBackround border">
+
+        <div class="row">
+            <div class="col-6">
+                <h2 class="text-info">قائمة الأحياء</h2>
+            </div>
+
+            <div class="col-6 text-left mb-1">
+                <partial name="_CreateButtonPartial" />
+            </div>
+        </div>
+
+        <div class="container border border-secondary mb-1" style="height:60px">
+            <div class="row container">
+                <div class="input-group mb-3" style="padding-top:10px">
+                    <input type="text" class="form-control" placeholder="بحث ..." aria-label="Example text with button addon" aria-describedby="button-addon1" name="searchName">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+
+            @if (Model.Neighborhoods.Count() == 0)
+            {
+                <p class="text-danger">لا توجد أحياء مسجلة ...</p>
+            }
+            else
+            {
+                <table class="table table-striped border">
+                    <tr class="table-secondary">
+                        <th>
+                            @Html.DisplayNameFor(m => m.Neighborhoods[0].Name)
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model.Neighborhoods)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(m => item.Name)
+                            </td>
+                            <td style="width:150px">
+                                <partial name="_OperationsButtonsPartial" model="@item.Id" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+
+            <div Page-model="@Model.Paginginfo"
+                 page-classes-enabled="true"
+                 page-class="btn border"
+                 page-classes-normal="btn btn-light"
+                 page-classes-selected="btn btn-info active"
+                 class="btn-group float-lg-right">
+            </div>
+
+            <br />
+
+        </div>
+
+    </div>
+
+</form>

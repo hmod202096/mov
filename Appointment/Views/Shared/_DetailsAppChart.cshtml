@@ -1,0 +1,80 @@
+﻿
+@model IEnumerable<Reservation_CustomerViewModel>
+
+@if (Model.Count() == 0)
+{
+    <p class="text-danger">لا توجد مواعيد ....</p>
+}
+else
+{
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-fixed">
+            <thead class="bg-custom-1">
+                <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>الجوال</th>
+                    <th>الحي</th>
+                    <th>التاريخ</th>
+                    <th>الفترة</th>
+                    <th>التبرعات</th>
+                    <th>حالة الموعد</th>
+                    <th>ملاحظات السائق</th>
+                    <th>اسم السائق</th>
+                    <th>المستخدم</th>
+                    <th>الفرع</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var x = 0;
+                    var status = string.Empty;
+                }
+
+                @foreach (var item in Model)
+                {
+                    x += 1;
+
+                <tr>
+                    <th>@x</th>
+                    <td>@item.CustomerName</td>
+                    <td>@item.Mobily</td>
+                    <td>@item.Nieh</td>
+                    <td>@item.AppointmentDate</td>
+                    <td>@item.Priod</td>
+                    <td>@item.Donation</td>
+
+                    @if (item.Status == SD.BookingDone)
+                    {
+                        status = "لم يسند له سائق";
+                    }
+                    else if (item.Status == SD.DriverDone)
+                    {
+                        status = "لم يتم تنفيذه من قبل السائق";
+                    }
+                    else if (item.Status == SD.CompletedDone)
+                    {
+                        status = "منفذ";
+                    }
+                    else if (item.Status == SD.CancelDone)
+                    {
+                        status = "ملغي من قبل السائق";
+                    }
+                    else
+                    {
+                        status = "تم حذف الموعد";
+                    }
+
+                    <td>@status</td>
+                    <td>@item.Notes</td>
+                    <td>@item.Driver</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Branches</td>
+                </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}

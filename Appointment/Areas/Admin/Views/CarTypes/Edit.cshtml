@@ -1,0 +1,37 @@
+﻿@model CareTypes
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تعديل بيانات النوع</h2>
+    <br />
+
+    <form asp-action="Edit" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_UpdateAndBackToListButtonPartial" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+

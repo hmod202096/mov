@@ -1,0 +1,287 @@
+﻿@model ReservtionViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+    <div id="pdfContainer">
+
+        <form method="get">
+
+            <div class="row">
+                <div class="col-6">
+                    <h2 class="text-info">قائمة المواعيد</h2>
+                </div>
+
+                <div class="col-6 text-left mb-1">
+                    <button type="button" class="btn btn-primary showMobily" data-toggle="model">
+                        <i class="fa-solid fa-plus"></i> &nbsp; جـديد
+                    </button>
+                </div>
+            </div>
+
+            <div class="container border border-secondary mb-1" style="height:60px">
+                <div class="row container">
+                    <div class="input-group mb-3" style="padding-top:10px">
+                        <input type="text" class="form-control" placeholder="بحث بالاسم ..." name="searchName" maxlength="20">
+                        <input type="text" class="form-control" placeholder="بحث بالهاتف ..." name="searchPhone" maxlength="10">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.ReservationsList.Count > 0)
+            {
+                <div class="text-left mb-1">
+                    <button id="CreatePDF" class="btn btn-success"><i class="fa-solid fa-print"></i></button>
+                </div>
+
+            }
+
+
+
+            @if (Model.ReservationsList.Count() == 0)
+            {
+                <p class="text-danger">لا توجد مواعيد مسجلة ...</p>
+            }
+            else
+            {
+                <table class="table table-striped border">
+                    <tr class="table-secondary">
+                        <th>
+                            الاسم
+                        </th>
+                        <th>
+                            الحي
+                        </th>
+                        <th>
+                            تاريخ الموعد
+                        </th>
+                        <th>
+                            ام القرى
+                        </th>
+                        <th>
+                            اليوم
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model.ReservationsList)
+                    {
+
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(m => item.Customers.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.Customers.Neighborhoods.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m => item.AppointmentDate)
+                            </td>
+                            <td>
+                                @item.AppointmentDate.ToString("dd/MM/yyyy", new System.Globalization.CultureInfo("ar-SA"))
+                            </td>
+                            <td>
+                                @item.AppointmentDate.ToString("dddd", new System.Globalization.CultureInfo("ar-SA"))
+                            </td>
+
+                            <td class="text-left">
+                                <div class="btn-group" role="group">
+
+                                    <button type="button" class="btn btn-success showDetails" data-id="@item.Id" data-toggle="model">
+                                        <i class="fas fa-list-alt"></i>
+                                    </button>
+
+                                    <a asp-action="Edit" class="btn btn-primary text-white" asp-route-id="@item.Id">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" class="btn btn-danger text-white" asp-route-id="@item.Id">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+
+                                    <button type="button" class="btn btn-warning showStatus" data-id="@item.Id" data-toggle="model">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+
+            <div Page-model="@Model.Paginginfo"
+                 page-classes-enabled="true"
+                 page-class="btn border"
+                 page-classes-normal="btn btn-light"
+                 page-classes-selected="btn btn-info active"
+                 class="btn-group float-lg-right">
+            </div>
+
+            <br />
+            <div>
+                @*<button id="btnPdf" class="btn btn-primary">طباعة</button>*@
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Modal mobily -->
+<form method="get">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+         style="min-width:50%; max-width:40%; margin:1.75rem auto">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-light justify-content-center">
+                    <h5 class="modal-title">أدخل جوال المتبرع</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="col-md-10 col-sm-12">
+                            <input asp-for="Mobily" class="form-control m-1">
+                            <span asp-validation-for="Mobily" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" asp-action="Create" asp-route-mobily="@Model.Mobily" class="btn btn-primary">ادخال</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">اغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal Detailes Appointment -->
+<div class="modal fade" id="myModel" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog-centered modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-light justify-content-center">
+                <h3 class="modal-title">تفاصيل الموعد</h3>
+            </div>
+
+            <div class="modal-body justify-content-center" id="myModalContent">
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" style="width:20%" data-dismiss="modal">
+                    اغلاق
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Status Appointment-->
+<div class="modal fade" id="myAppointmentStatus" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog-centered modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-light justify-content-center">
+                <h5 class="modal-title">حالة الموعد</h5>
+            </div>
+
+            <div class="modal-body justify-content-center" id="myAppointmentStatusContent">
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" style="width:20%" data-dismiss="modal">
+                    أغلاق
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script type="text/javascript">
+
+        var URL = '/Emplooye/Reservationes/GetReservationDetails';
+        var URLAppointmentStatus = '/Emplooye/Reservationes/GetAppintmentStatus';
+
+        $(function () {
+
+            //print pdf
+            $("#btnPdf").click(function () {
+                var sHtml = $("#pdfContainer").html();
+                sHtml = sHtml.replace(/</g, "start").replace(/>/g, "end");
+                window.open("../Emplooye/Reservationes/GeneratePdf?html=" + sHtml, "_blank");
+            });
+            //CreatePDF
+            $("#CreatePDF").click(function () {
+                window.open('../Emplooye/Reservationes/CreatePDF', '_blank');
+            });
+            //showMobily
+            $(".showMobily").click(function () {
+                $('#exampleModal').modal('show');
+            });
+            //showDetails
+            $(".showDetails").click(function () {
+                var $buttonClick = $(this);
+                var id = $buttonClick.attr('data-id');
+                $.ajax({
+                    type: "GET",
+                    url: URL,
+                    contents: "text/html;charset=utf-8",
+                    data: { "id": id },
+                    cache: false,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#myModalContent').html(data);
+                        $('#myModel').modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic Contet Load Faild");
+                    }
+                });
+            });
+            //showStatus
+            $(".showStatus").click(function () {
+                var $buttonClick = $(this);
+                var id = $buttonClick.attr('data-id');
+                $.ajax({
+                    type: "GET",
+                    url: URLAppointmentStatus,
+                    contents: "text/html;charset=utf-8",
+                    data: { "id": id },
+                    cache: false,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#myAppointmentStatusContent').html(data);
+                        $('#myAppointmentStatus').modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic Contet Load Faild");
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
+}
+

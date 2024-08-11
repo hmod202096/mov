@@ -1,0 +1,480 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background-color: #fff;
+        /*box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);*/
+        box-shadow: 0 10px 10px 10px rgb(0 0 0 / 11%), 0 0px 0px 0px rgb(0 0 0 / 50%)
+    }
+
+    .card-header {
+        background-color: #fff;
+    }
+
+    .circal {
+        width: 48px;
+        height: 48px;
+        background-position: center;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(64, 64, 64, 0.4);
+        border-radius: 0.75rem;
+        margin-top: -1.5rem;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+        top: 31%;
+        font-size: 1.5rem;
+        color: #fff;
+        top: -11px;
+        position: relative;
+    }
+
+    .icon-lg {
+        top: 10%;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+    .bg-gradient-primary {
+        background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    }
+
+    .bg-gradient-dark {
+        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+    }
+
+    .bg-gradient-success {
+        background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+    }
+
+    .bg-gradient-info {
+        background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%);
+    }
+
+
+    #container {
+        height: 400px;
+    }
+
+    .highcharts-figure,
+    .highcharts-data-table table {
+        min-width: 310px;
+        max-width: 800px;
+        margin: 1em auto;
+    }
+
+    .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #ebebeb;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+    }
+
+    .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table td,
+    .highcharts-data-table th,
+    .highcharts-data-table caption {
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table thead tr,
+    .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+
+    .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+    }
+</style>
+
+
+<div class="whiteBackround border">
+
+    <div class="form-group row mb-4">
+        <div class="col-12">
+            <h1 class="text-info text-right">لوحة القيادة الثانية</h1>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-success">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-3">عدد المتبرعين</p>
+                                <h4 id="usercount" class="mb-0">@Model.CountDonor</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-info">
+                                @*<i class="fa-regular fa-user icon-lg"></i>*@
+                                <i class="fa-solid fa-truck"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-3">عدد المواعيد</p>
+                                <h4 class="mb-0">@Model.CountAppo</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <br />
+
+    <form method="get">
+        @{
+            DateTime fromDate;
+            DateTime toDate;
+            fromDate = DateTime.Parse(ViewBag.d1);
+            toDate = DateTime.Parse(ViewBag.d2);
+        }
+        <div class="input-group border mb-5">
+            <div class="container row mb-3 mt-3">
+                <div class="col-sm-5">
+                    <input id="d1" type="text" name="fromDate" class="datepicker form-control" value="@fromDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-5">
+                    <input id="d2" type="text" name="toDate" class="datepicker form-control" value="@toDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary" onclick="showChart">تنفيذ</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div>
+
+        <!--تقرير عن المواعيد -->
+        <div class="form-group row">
+
+            <div class="col-sm-12 mb-5">
+                <div class="container">
+                    <p>
+                        <span class="text-info font-weight-bold">ملخص : </span>
+                        عن المواعيد التي تم حجزها ومعرفة المواعيد التي لم يتم تنفيذها من قبل مسئول الحركة أو من قبل السائق وكذلك المواعيد الملغاه والمنفذه
+                    </p>
+                    <table id="tb" class="table table-bordered">
+                        <thead style="background-color:#e2dfdf">
+                            <tr>
+                                <th>اسم الفرع</th>
+                                <th>اجمالي المواعيد</th>
+                                <th>المواعيد المنفذه</th>
+                                <th>المواعيد التي لم توزع على السائقين</th>
+                                <th>المواعيد التي لم تنفذ من قبل السائق</th>
+                                <th>المواعيد التي تم الغاءها من قبل السائق</th>
+                                <th>المواعيد التي تم حذفها من قبل المسؤول</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!--مقارنة المواعيد المنفذه بعدد المواعيد-->
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="myChartline" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<figure class="highcharts-figure">
+            <div id="container"></div>
+            <p class="highcharts-description">
+                Chart showing use of rotated axis labels and data labels. This can be a
+                way to include more labels in the chart,
+            </p>
+        </figure>*@
+
+    </div>
+</div>
+
+
+
+
+
+@section Scripts{
+
+    <script src="~/js/CustomDateTimePicker.js"></script>
+    <script src="~/js/CompareDate .js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0-rc.1/chartjs-plugin-datalabels.min.js"
+            integrity="sha512-+UYTD5L/bU1sgAfWA0ELK5RlQ811q8wZIocqI7+K0Lhh8yVdIoAMEs96wJAIbgFvzynPm36ZCXtkydxu1cs27w=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @*<script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>*@
+
+    <script>
+        $(function () {
+
+            let dat1 = $('#d1').val();
+            let dat2 = $('#d2').val();
+
+            //تقرير
+            $(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/Statistics/DashboardSecond/TableReport",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success(data) {
+                        if (data != null) {
+
+                            const sumtotal = data.reduce((accumulator, object) => {
+                                return accumulator + object.total;
+                            }, 0);
+                            const sumcomplete = data.reduce((accumulator, object) => {
+                                return accumulator + object.completedDone;
+                            }, 0);
+                            const sumbooking = data.reduce((accumulator, object) => {
+                                return accumulator + object.bookingDone;
+                            }, 0);
+                            const sumdriver = data.reduce((accumulator, object) => {
+                                return accumulator + object.driverDone;
+                            }, 0);
+                            const sumcancel = data.reduce((accumulator, object) => {
+                                return accumulator + object.cancelDone;
+                            }, 0);
+                            const sumdelete = data.reduce((accumulator, object) => {
+                                return accumulator + object.deleteDone;
+                            }, 0);
+
+                            var html = '';
+                            $.each(data, function (key, item) {
+                                html += '<tr>';
+                                html += '<td>' + item.branchName + '</td>';
+                                html += '<td>' + item.total + '</td>';
+                                html += '<td>' + item.completedDone + '</td>';
+                                html += '<td>' + item.bookingDone + '</td>';
+                                html += '<td>' + item.driverDone + '</td>';
+                                html += '<td>' + item.cancelDone + '</td>';
+                                html += '<td>' + item.deleteDone + '</td>';
+                                html += '</tr>';
+                            });
+
+                            html += '<tr class="text-danger">';
+                            html += '<th>' + 'المجموع' + '</th>';
+                            html += '<th>' + sumtotal + '</th>';
+                            html += '<th>' + sumcomplete + '</th>';
+                            html += '<th>' + sumbooking + '</th>';
+                            html += '<th>' + sumdriver + '</th>';
+                            html += '<th>' + sumcancel + '</th>';
+                            html += '<th>' + sumdelete + '</th>';
+                            html += '</tr>';
+
+                            $('.tbody').html(html);
+                        };
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            });
+
+            //مقارنة المواعيد بعدد المواعيد المنفذه
+            $(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/Statistics/DashboardSecond/Comparison",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _branchName = result[0];
+                        var _completedDone = result[1];
+                        var _total = result[2];
+
+                        const ctx = document.getElementById('myChartline');
+
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: _branchName,
+                                datasets: [{
+                                    label: 'عدد المواعيد',
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#ff0000',
+                                    borderWidth: 3,
+                                    tension: 0.4,
+                                    pointBorderColor: false,
+                                    startAngle: 0,
+                                    data: _total,
+                                    fill: false,
+                                    lineTension: .4,
+                                    showLine: true,
+                                },
+                                {
+                                    label: 'المواعيد المنفذَه',
+                                    fill: true,
+                                    lineTension: .4,
+                                    startAngle: 0,
+                                    data: _completedDone,
+                                    backgroundColor: 'transparent',
+                                    pointBorderColor: '#32621e',
+                                    borderColor: '#32621e',
+                                    borderWidth: 2,
+                                    showLine: true,
+                                },
+                                ]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                layout: {
+                                    padding:20
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                                plugins: {
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'center',
+                                        align: 'right',
+                                        offset: 15,
+                                        display: function (context) {
+                                            return (context.dataIndex = context.dataset.data.length);
+                                        }
+                                    }
+                                },
+
+                                title: {
+                                    display: true,
+                                    text: 'حركة المواعيد حسب التاريخ والفرع'
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //$(function () {
+
+            //    $.ajax({
+            //        type: "GET",
+            //        url: "/Statistics/DashboardSecond/GetData",
+            //        dataType: "json",
+            //        data: { fromDate: dat1, toDate: dat2 },
+            //        success: function (result) {
+
+            //            var _branchName = [];
+            //            var _countAppo = [];
+
+            //            for (var i = 0; i < result.length; i++) {
+
+            //                _branchName.push(result[i].branchName);
+            //                var serierCount = new Array(result[i].branchName, result[i].total);
+            //                _countAppo.push(serierCount);
+            //            }
+
+            //            Highcharts.chart('container', {
+            //                chart: {
+            //                    type: 'column'
+            //                },
+            //                title: {
+            //                    text: 'عدد الحجوزات لكل فرع'
+            //                },
+            //                subtitle: {
+            //                    /* text: 'Source: <a href="https://worldpopulationreview.com/world-cities" target="_blank">World Population Review</a>'*/
+            //                },
+            //                xAxis: {
+            //                    type: 'الفرع',
+            //                    labels: {
+            //                        rotation: -45,
+            //                        style: {
+            //                            fontSize: '13px',
+            //                            fontFamily: 'Verdana, sans-serif'
+            //                        }
+            //                    }
+            //                },
+            //                yAxis: {
+            //                    min: 0,
+            //                    title: {
+            //                        text: '(الحجوزات بالمئات)'
+            //                    }
+            //                },
+            //                legend: {
+            //                    enabled: false
+            //                },
+            //                tooltip: {
+            //                    /* pointFormat: 'Population in 2021: <b>{point.y:.1f} millions</b>'*/
+            //                },
+            //                series: [{
+            //                    name: 'المواعيد',
+            //                    data:
+            //                        _countAppo,
+            //                    dataLabels: {
+            //                        enabled: true,
+            //                        rotation: -90,
+            //                        color: '#FFFFFF',
+            //                        align: 'right',
+            //                        format: '{point.y:.1f}', // one decimal
+            //                        y: 10, // 10 pixels down from the top
+            //                        style: {
+            //                            fontSize: '13px',
+            //                            fontFamily: 'Verdana, sans-serif'
+            //                        }
+            //                    }
+            //                }]
+            //            });
+            //        },
+            //        error: function (req, status, error) {
+            //            console.log(status);
+            //        }
+            //    });
+            //})
+        });
+    </script>
+}

@@ -1,0 +1,94 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "TransferUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-info">نقل الموظف من فرع إلى فرع آخر</h2>
+        </div>
+
+        <div class="col-6 text-left">
+            
+        </div>
+    </div>
+
+
+    <div>
+
+        @if (Model.ApplicationUsersList.Count() == 0)
+        {
+            <p class="text-danger">لا يوجد مستخدمين ....</p>
+        }
+        else
+        {
+
+            @foreach (var branch in Model.BranchesList)
+            {
+
+                var applicationUsersList = Model.ApplicationUsersList.Where(m => m.BranchId == branch.Id);
+
+                int x = 0;
+
+                <div class="row">
+
+                    @if (applicationUsersList.Count() > 0)
+                    {
+
+
+                        <div class="bg-light text-success form-control pb-2">
+                            <h4>
+                                @branch.Name
+                            </h4>
+                        </div>
+
+                        <table class="table table-striped border">
+
+                            <tr class="table-secondary">
+                                <th scope="col">#</th>
+                                <th scope="col">الاسم</th>
+                                <th scope="col">الايميل</th>
+                                <th scope="col">نوع المستخدم</th>
+                                <th>
+
+                                </th>
+                            </tr>
+
+                            @foreach (var item in applicationUsersList)
+                            {
+                                x += 1;
+
+                                <tr>
+                                    <th scope="row">
+                                        @x
+                                    </th>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(m => item.UserTypes.Type)
+                                    </td>
+
+                                    <td class="text-left" style="width:500px">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="TransferEdit" class="btn btn-outline-warning text-success" asp-route-id="@item.Id"><i class="fa-solid fa-right-left"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+

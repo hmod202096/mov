@@ -1,0 +1,92 @@
+﻿@model ReservationOperationViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    var isWhere = ViewBag.IsWhere;
+}
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تعديل بيانات الموعد</h2>
+    <br />
+
+    <form asp-action="Edit" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @*تمرير براميتر أعلى ظهور للتاريخ*@
+        <input type="text" id="maxdate" value="@Model.MaxDate" style="display:none">
+
+        <input type="hidden" asp-for="Reservations.Id">
+
+        @*لذهاب الى صفحة المواعيد الغير منفذه*@
+        <input type="hidden" asp-for="@Model.PageDetailesNotDoneAppointment" value="@ViewBag.IsWhere" />
+
+        <div class="mb-3">
+            <label asp-for="Reservations.AppointmentDate" class="input-group-text"></label>
+            <div class="input-group mb-3 date">
+                <input type="text"
+                       asp-for="Reservations.AppointmentDate"
+                       class="datepicker form-control"
+                       onchange="checkTheNumber()"
+                       aria-describedby="button-addon1"
+                       value="@Model.Reservations.AppointmentDate.ToString("yyy-MM-dd")" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reservations.Priod" class="input-group-text"></label>
+            <select class="form-control"
+                    asp-for="Reservations.Priod"
+                    asp-items="Html.GetEnumSelectList<Reservations.Epriod>()">
+            </select>
+            <span asp-validation-for="Reservations.Priod" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reservations.Donation" class="input-group-text"></label>
+            <textarea asp-for="Reservations.Donation" class="form-control" style="height:100px"></textarea>
+            <span asp-validation-for="Reservations.Donation" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reservations.Comments" class="input-group-text"></label>
+            <textarea asp-for="Reservations.Comments" class="form-control" style="height:100px"></textarea>
+            <span asp-validation-for="Reservations.Comments" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <input type="submit" id="sav" class="btn btn-primary form-control" value="حفظ" />
+                    </div>
+                    <div class="col-md-3">
+                        @if (isWhere == true)
+                        {
+                            <a asp-action="DetailesNotDoneAppointment" class="btn btn-success form-control">الرجوع للخلف</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" class="btn btn-success form-control">الرجوع للخلف</a>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts{
+
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DateScriptsPartial" />
+    <script src="~/js/CheckCountAppointment.js"></script>
+}

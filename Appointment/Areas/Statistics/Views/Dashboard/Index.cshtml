@@ -1,0 +1,942 @@
+﻿@model List<DashboardViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background-color: #fff;
+        /*box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);*/
+        box-shadow: 0 10px 10px 10px rgb(0 0 0 / 11%), 0 0px 0px 0px rgb(0 0 0 / 50%)
+    }
+
+    .card-header {
+        background-color: #fff;
+    }
+
+    .circal {
+        width: 48px;
+        height: 48px;
+        background-position: center;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(64, 64, 64, 0.4);
+        border-radius: 0.75rem;
+        margin-top: -1.5rem;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+        top: 31%;
+        font-size: 1.5rem;
+        color: #fff;
+        top: -11px;
+        position: relative;
+    }
+
+    .icon-lg {
+        top: 10%;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+    .bg-gradient-primary {
+        background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    }
+
+    .bg-gradient-dark {
+        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+    }
+
+    .bg-gradient-success {
+        background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+    }
+
+    .bg-gradient-info {
+        background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%);
+    }
+</style>
+
+<div class="whiteBackround border">
+
+    <div class="form-group row">
+        <div class="col-12">
+            <h1 class="text-info text-right">لوحة القيادة الأولى</h1>
+        </div>
+    </div>
+
+    <form method="get">
+        @{
+            DateTime fromDate;
+            DateTime toDate;
+            fromDate = DateTime.Parse(ViewBag.d1);
+            toDate = DateTime.Parse(ViewBag.d2);
+        }
+        <div class="input-group border mb-5">
+            <div class="container row mb-3 mt-3">
+                <div class="col-sm-5">
+                    <input id="d1" type="text" name="fromDate" class="datepicker form-control" value="@fromDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-5">
+                    <input id="d2" type="text" name="toDate" class="datepicker form-control" value="@toDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary" onclick="showChart">تنفيذ</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="form-group row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-success">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-0">عدد المستخدمين</p>
+                                <h4 id="usercount" class="mb-0">@Model.Sum(s => s.TotalUser)</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-primary">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-0">عدد السائقين</p>
+                                <h4 class="mb-0">@Model.Sum(s => s.TotalDriver)</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+   
+    <br />
+    <div>
+
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="AllOperation" width="400" height="200" role="img" ></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+
+            <!--الأعلى مواعيد حسب الفروع -->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="MaxByBranch" width="400" height="200" role="img" class="showDetails" data-toggle="model"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--الأعلى مواعيد منفذه حسب الفروع-->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="MaxByCompleted" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <!--الأعلى مواعيد متعثرة حسب الفروع-->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="Unfulfilled" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--الأعلى مواعيد ملغية حسب الفروع-->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="MaxByCancel" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <!--الأعلى مواعيد حسب الأحياء-->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="ChartNeigh" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--الأعلى مواعيد حسب السائق-->
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mb-5">
+                        <div class="card">
+                            <canvas id="ChartDriver" width="400" height="200" role="img"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Detailes Chart -->
+<div class="modal fade" id="myModel" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog-scrollable modal-dialog " role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-light justify-content-center">
+                <h3 class="modal-title">المواعيد</h3>
+            </div>
+
+            <div class="modal-body justify-content-center" id="myModalContent">
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-success" style="width:20%" data-dismiss="modal">
+                    اغلاق
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/js/CustomDateTimePicker.js"></script>
+    <script src="~/js/CompareDate .js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0-rc.1/chartjs-plugin-datalabels.min.js"
+            integrity="sha512-+UYTD5L/bU1sgAfWA0ELK5RlQ811q8wZIocqI7+K0Lhh8yVdIoAMEs96wJAIbgFvzynPm36ZCXtkydxu1cs27w=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        $(function () {
+
+            let dat1 = $('#d1').val();
+            let dat2 = $('#d2').val();
+
+            // All AllOperations :
+
+            $(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/AllOperations",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _branchName = _data[0];
+                        var _unexecuted = _data[1];
+                        var _unfulfilled = _data[2];
+                        var _completedDone = _data[3];
+                        var _total = _data[4];
+
+                        const ctx = document.getElementById('AllOperation').getContext('2d');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _branchName,
+                                datasets: [{
+                                    label: 'عدد المواعيد',
+                                    data: _total,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)'
+                                    ],
+                                    borderWidth: 1,
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'center',
+                                        align: 'right',
+                                        offset: '5'
+                                    }
+                                },
+                                    {
+                                        label: 'المواعيد المنفذه',
+                                        data: _completedDone,
+                                        backgroundColor: [
+                                            'rgba(255, 206, 86, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(255, 206, 86, 1)'
+                                        ],
+                                        borderWidth: 1,
+                                        datalabels: {
+                                            color: 'blue',
+                                            anchor: 'center',
+                                            align: 'right',
+                                            offset: '5'
+                                        }
+                                    },
+                                    {
+                                        label: 'المواعيد الغير منفذه',
+                                        data: _unexecuted,
+                                        backgroundColor: [
+                                            'rgba(54, 162, 235, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(54, 162, 235, 1)'
+                                        ],
+                                        borderWidth: 1,
+                                        datalabels: {
+                                            color: 'blue',
+                                            anchor: 'center',
+                                            align: 'right',
+                                            offset: '5'
+                                        }
+                                    },
+                                    
+                                    {
+                                        label: 'المواعيد المتعثرة',
+                                        data: _unfulfilled,
+                                        backgroundColor: [
+                                            'rgba(0, 0, 0, 0.1)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(0, 0, 0, 0.1)'
+                                        ],
+                                        borderWidth: 1,
+                                        datalabels: {
+                                            color: 'blue',
+                                            anchor: 'center',
+                                            align: 'right',
+                                            offset: '5'
+                                        }
+                                    }
+                                ]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد حسب الفروع
+            $(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/MaxBookingByBranch",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+
+                        const ctx = document.getElementById('MaxByBranch').getContext('2d');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'عدد المواعيد',
+                                    data: _chartData,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)',
+                                        'rgba(0, 0, 0, 0.1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(0, 0, 0, 0.1)'
+                                    ],
+                                    borderWidth: 1,
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'end',
+                                        align: 'top',
+                                        offset: '5'
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد منفذه حسب الفروع
+            $(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/MaxCompletedByBranch",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+
+                        const ctx = document.getElementById('MaxByCompleted');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'المواعيد المنفذه',
+                                    data: _chartData,
+                                    borderWidth: 1,
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'end',
+                                        align: 'top',
+                                        offset: '5'
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد متعثرة حسب الفروع
+            $(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/UnfulfilledByBranch",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+
+                        const ctx = document.getElementById('Unfulfilled');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'المواعيد الغير منفذه',
+                                    data: _chartData,
+                                    borderWidth: 1,
+                                    borderColor: '#FF6384',
+                                    backgroundColor: '#FFB1C1',
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'end',
+                                        align: 'top',
+                                        offset: '5'
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد ملغية حسب الفروع
+            $(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/MaxCancelByBranch",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+
+                        const ctx = document.getElementById('MaxByCancel');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'المواعيد المتعثرة',
+                                    data: _chartData,
+                                    borderWidth: 1,
+                                    borderColor: '#816a6a',
+                                    backgroundColor: '#816a6a',
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'end',
+                                        align: 'top',
+                                        offset: '5'
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد حسب الأحياء
+            $(function showChart() {
+                $.ajax({
+                    type: "GET",
+                    url: "/Statistics/Dashboard/GetMaxNiegh",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+                        const ctx = document.getElementById('ChartNeigh').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'polarArea',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    data: _chartData,
+                                    borderWidth: 1,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(0, 0, 0, 0.1)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(0, 0, 0, 0.1)'
+                                    ],
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'center',
+                                        align: 'center',
+                                        offset: '10',
+                                        font: {
+                                            size: 14
+                                        }
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    r: {
+                                        pointLabels: {
+                                            display: true,
+                                            centerPointLabels: true,
+                                            font: {
+                                                size: 18,
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'الأعلى مواعيد حسب الأحياء',
+                                        font: {
+                                            size: 20
+                                        }
+                                    }
+                                }
+                            },
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            });
+
+            //الأعلى مواعيد حسب السائقين
+            $(function showChart() {
+                $.ajax({
+                    type: "GET",
+                    url: "/Statistics/Dashboard/CountExuDriver",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+                        const ctx = document.getElementById('ChartDriver').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'polarArea',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    data: _chartData,
+                                    borderWidth: 1,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(0, 0, 0, 0.1)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(0, 0, 0, 0.1)'
+                                    ],
+                                    datalabels: {
+                                        color: 'blue',
+                                        anchor: 'center',
+                                        align: 'center',
+                                        offset: '5',
+                                        font: {
+                                            size: 14
+                                        }
+                                    }
+                                }]
+                            },
+                            plugins: [ChartDataLabels],
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    r: {
+                                        pointLabels: {
+                                            display: true,
+                                            centerPointLabels: true,
+                                            font: {
+                                                size: 18
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'الأعلى مواعيد حسب السائقين',
+                                        font: {
+                                            size: 20
+                                        }
+                                    }
+                                }
+                            },
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            $(".showDetails").click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: '/Statistics/Dashboard/DetailsMaxBooking',
+                    contents: "text/html;charset=utf-8",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    cache: false,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#myModalContent').html(data);
+                        $('#myModel').modal('show');
+                    },
+                    error: function () {
+                        alert("Dynamic Contet Load Faild");
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+@*var branchId = [];
+    var branchName = [];
+    var bookingDone = [];
+    var driverDone = [];
+    var completedDone = [];
+    var cancelDone = [];
+    var total = [];
+
+    @if (Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            @:branchId.push(@item.BranchId)
+            @:branchName.push(@Html.Raw(Json.Serialize(item.BranchName)));
+            @:bookingDone.push(@item.BookingDone);
+            @:driverDone.push(@item.DriverDone);
+            @:completedDone.push(@item.CompletedDone);
+            @:cancelDone.push(@item.CancelDone);
+            @:total.push(@item.Total);
+        }
+     };*@
+
+
+
+@*$(function () {
+        let dat1 = $('#d1').val();
+        let dat2 = $('#d2').val();
+        var appo = [];
+        $.ajax({
+            type: 'POST',
+            url: "/Statistics/Dashboard/CountAppoByStatus",
+            data: { fromDate: dat1, toDate: dat2 },
+            success(data) {
+                if (data != null) {
+                    $.each(data, function (key, value) {
+                        appo.push([
+                            value.branchName,
+                            value.bookingDone,
+                            value.driverDone,
+                            value.completedDone,
+                            value.cancelDone,
+                            value.total
+                        ]);
+                    });
+                }
+                $('#tb').dataTable({
+                    destroy: true,
+                    data: appo
+                });
+            },
+            error: function (req, status, error) {
+                console.log(status);
+            }
+        })
+    });*@
+
+
+@*//bar
+    $(function () {
+
+        let dat1 = $('#d1').val();
+        let dat2 = $('#d2').val();
+        var barCanvas = document.getElementById("ChartStausExuc").getContext('2d');
+
+        $.ajax({
+            type: "POST",
+            url: "/Statistics/Dashboard/CountStatus",
+            dataType: "json",
+            data: { fromDate: dat1, toDate: dat2 },
+            success: function (result) {
+
+                var _data = result;
+                var _branchName = _data[0];
+                var _bookingDone = _data[1];
+                var _driverDone = _data[2];
+                var _completedDone = _data[3];
+                var _cancelDone = _data[4];
+                var _total = _data[5];
+
+                var bookingDone = {
+                    label: 'المواعيد المحجوزه',
+                    data: _total,
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderWidth: 0,
+                    lineTension: 0,
+                };
+                var completedDone = {
+                    label: 'المواعيد المنفذه',
+                    data: _completedDone,
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderWidth: 0,
+                };
+                var datasetvalues = {
+                    labels: _branchName,
+                    datasets: [bookingDone, completedDone]
+                };
+
+                var chartOptions = {
+                    scales: {
+
+                    }
+                };
+
+                var barChart = new Chart(barCanvas, {
+                    type: 'bar',
+                    data: datasetvalues,
+                    options: chartOptions
+                });
+            },
+            error: function (req, status, error) {
+                console.log(status);
+            }
+        });
+    })*@
+
+
+@*//حالة المواعيد
+    $(function () {
+
+        let dat1 = $('#d1').val();
+        let dat2 = $('#d2').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Statistics/Dashboard/CountStatus",
+            dataType: "json",
+            data: { fromDate: dat1, toDate: dat2 },
+            success: function (result) {
+
+                var _data = result;
+                var _branchName = _data[0];
+                var _bookingDone = _data[1];
+                var _driverDone = _data[2];
+                var _completedDone = _data[3];
+                var _cancelDone = _data[4];
+                var _deleteDone = _data[5];
+                var _total = _data[6];
+
+                const ctx = document.getElementById('ChartStausAppo').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: _branchName,
+                        datasets: [{
+                            label: '# عدد الحجوزات',
+                            data: _total,
+                            borderWidth: 1,
+                            borderColor: '#36A2EB',
+                            backgroundColor: '#9BD0F5',
+                        },
+                        {
+                            label: '# المواعيد المنفذه',
+                            data: _completedDone,
+                            borderWidth: 1,
+                            borderColor: '#FF6384',
+                            backgroundColor: '#FFB1C1',
+                        },
+                        {
+                            label: '# المواعيد الملغاه',
+                            data: _cancelDone,
+                            borderWidth: 1,
+                            borderColor: '#FF6384',
+                            backgroundColor: '#FFB1C1',
+                        }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+            },
+            error: function (req, status, error) {
+                console.log(status);
+            }
+        });
+    })*@

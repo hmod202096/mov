@@ -1,0 +1,51 @@
+﻿@model CarAndCarTypeViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">تفاصيل بيانات السيارة</h2>
+    <br />
+
+    <div class="mb-3">
+        <label asp-for="Cares.PlatId" class="form-label"></label>
+        <input asp-for="Cares.PlatId" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cares.model" class="form-label"></label>
+        <input asp-for="Cares.model" readonly class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cares.CareTypes.Name" class="form-label"></label>
+        <input asp-for="Cares.CareTypes.Name" readonly class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cares.Active" class="form-label"></label>
+        <input asp-for="Cares.Active" disabled class="form-label">
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-6">
+                    <a asp-action="Edit" class="btn btn-primary form-control" asp-route-id="@Model.Cares.PlatId">تعديل</a>
+                </div>
+                <div class="col-6">
+                    <a asp-action="Index" class="btn btn-success form-control">الرجوع للخلف</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

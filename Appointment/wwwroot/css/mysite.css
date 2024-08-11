@@ -1,0 +1,158 @@
+﻿
+
+.bg-custom-1 {
+    background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+}
+
+.bg-custom-2 {
+    background-color: #00ab67;
+}
+
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: Calibri;
+}
+
+/*نوع خط العناوين */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 22px;
+    color: aliceblue;
+    font-family: 'FontAwesome';
+    font-family: revert;
+    color: snow;
+}
+
+
+.webBackground {
+    background-image: url('../images/bgPage.jpg');
+}
+
+
+/*.whiteBackround {
+    background-color: white;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    transform-style: preserve-3d;
+}*/
+
+.whiteBackround {
+    background-color: white;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    margin-top: -44px;
+    position: relative;
+}
+
+.menu-filter-list li {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px 20px 10px;
+    text-transform: uppercase;
+    background: #f5f5f5;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 13px;
+    -moz-animation: all 0.3s;
+    transition: all 0.3s;
+    font-family: 'Arabic Typesetting'
+}
+
+    .menu-filter-list li.is-checke, .menu-filter-list li:hover {
+        background-color: #545b62;
+        color: #fff;
+    }
+
+/*تم اخذها من البوستراب وتم التعديل عليها*/
+.form-control:disabled, .form-control[readonly] {
+    background-color: white;
+    opacity: 1;
+}
+
+/*تم اخذها من البوستراب وتم التعديل عليها*/
+/*عشان عرض المودل بنسبة 70% بدلا من 500px*/
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 70%;
+        margin: 1.75rem auto;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1181px;
+    }
+}
+
+.topnav a:hover {
+    border-bottom: 3px solid red;
+    background-color: !important greenyellow;
+}
+
+
+.branch {
+    padding-bottom: 4.5rem;
+}
+
+
+/*Start section*/
+.upper-bar {
+    background-color: #00ab67;
+    color: #FFF;
+}
+
+    .upper-bar .info {
+        margin: 15px 0;
+    }
+
+@media(max-width: 576px) {
+    .upper-bar .info:first-child {
+        margin-bottom: 0
+    }
+}
+
+.upper-bar span {
+    color: #bfc6c9
+}
+
+.upper-bar .get-quote {
+    display: inline-block;
+    border: 1px solid #ec1c23;
+    padding: 2px 10px;
+    margin-left: 20px
+}
+
+@media(max-width: 576px) {
+    .upper-bar .get-quote {
+        border: none;
+        margin-left: 5px
+    }
+}
+/*End section*/
+
+/*صفحة التسجيل */
+.gradient-custom {
+    /* fallback for old browsers */
+    background: #f093fb;
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1));
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1))
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+/*نهاية صفحة التسجيل */

@@ -1,0 +1,51 @@
+﻿@model ReservationDetailesViewModel
+
+
+
+@{
+    var comments = Model.Reservations.Comments;
+    if (comments == null || comments.Trim().Length == 0)
+    {
+        Model.Reservations.Comments = "لم يتم تسجيل أي ملاحظات";
+    }
+}
+
+<div class="container border mt-3" style="width:100%; border-radius:10px">
+    <br />
+    
+    <div class="pl-3 pr-3 mb-3">
+        <div class="card" style="width: 100%;">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <h5 class="text-info"> تاريخ الموعد : </h5>
+                    <span class="text-muted">@Model.Reservations.AppointmentDate.Date.ToShortDateString()</span>
+                </li>
+                <li class="list-group-item">
+                    <h5 class="text-info"> التبرعات : </h5>
+                    <span class="text-muted">
+                        <textarea asp-for="Reservations.Donation" class="form-control" style="height:150px"></textarea>
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    <h5 class="text-info"> الملاحظات : </h5>
+                    <span class="text-muted">@Model.Reservations.Comments</span>
+                </li>
+                <li class="list-group-item">
+                    <h5 class="text-info"> وقت التسجيل : </h5>
+                    <span class="text-muted">@Model.Reservations.CreateOn</span>
+                </li>
+                <li class="list-group-item">
+                    <h5 class="text-info"> تم الحجز بواسطة : </h5>
+                    <span class="text-muted">@Model.Reservations.ApplicationUser.Name</span>
+                </li>
+            </ul>
+            <div class="card-footer text-center">
+                <h4> <span class="text-danger">@Model.Reservations.ApplicationUserDriver.Name</span> </h4>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

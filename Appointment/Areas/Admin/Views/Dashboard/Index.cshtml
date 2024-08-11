@@ -1,0 +1,227 @@
+﻿@model IEnumerable<DashboardViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background-color: #fff;
+        /*box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);*/
+        box-shadow: 0 10px 10px 10px rgb(0 0 0 / 11%), 0 0px 0px 0px rgb(0 0 0 / 50%)
+    }
+
+    .card-header {
+        background-color: #fff;
+    }
+
+    .circal {
+        width: 48px;
+        height: 48px;
+        background-position: center;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(64, 64, 64, 0.4);
+        border-radius: 0.75rem;
+        margin-top: -1.5rem;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+        top: 31%;
+        font-size: 1.5rem;
+        color: #fff;
+        top: -11px;
+        position: relative;
+    }
+
+    .icon-lg {
+        top: 10%;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+    .bg-gradient-primary {
+        background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    }
+
+    .bg-gradient-dark {
+        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+    }
+
+    .bg-gradient-success {
+        background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+    }
+
+    .bg-gradient-info {
+        background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%);
+    }
+</style>
+
+<div class="whiteBackround">
+    <div class="row">
+        <div class="col-sm-4 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-success">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-1">
+                                <p class="text-sm mb-0">عدد المستخدمين</p>
+                                <h4 class="mb-0">53</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-primary">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-1">
+                                <p class="text-sm mb-0">مستخدمي اليوم</p>
+                                <h4 class="mb-0">53</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-4 mb-5">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-info">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-1">
+                                <p class="text-sm mb-0">عدد السائقين</p>
+                                <h4 class="mb-0">53</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="whiteBackround border">
+    <p>
+        <div class="row">
+            <div class="col-1">
+                <label><b>Chart-Type</b></label>
+            </div>
+            <div class="col-2">
+                <select id="ChartType" class="form-control" style="width:150px;" required>
+                    <option selected>-- Select Cahrt Type --</option>
+                    <option>bar</option>
+                    <option>line</option>
+                    <option>pie</option>
+                    <option>doughnut</option>
+                </select>
+                <div class="col-4">
+                    <input id="ID" value="Show Graph" type="button" />
+                </div>
+            </div>
+        </div>
+    </p>
+    <br />
+    <div id="ChartView">
+
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#ID").click(function () {
+
+                var chartType = $('#ChartType').val();
+                var chartView = document.getElementById('ChartView');
+
+                chartView.innerHTML = '$nbsp';
+                $('#ChartView').append('<canvas id="myChart" style="max-width:400px; max-height:430px;"></canvas>');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Dashboard/GetCountAppointment",
+                    data: "",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: OnSuccessResult,
+                    error: OnError
+                });
+
+                function OnSuccessResult(data) {
+
+                    var _data = data;
+                    var _chartLabels = _data[0];
+                    var _chartData = _data[1];
+
+
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: chartType,
+                        data: {
+                            labels: _chartLabels,
+                            datasets: [{
+                                label: 'عدد المواعيد لكل فرع',
+                                data: _chartData,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                };
+
+                function OnError(err) {
+                    alert("Dynamic Contet Load Faild");
+                };
+            });
+        });
+
+    </script>
+
+}

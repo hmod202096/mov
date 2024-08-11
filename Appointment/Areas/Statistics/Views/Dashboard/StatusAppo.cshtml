@@ -1,0 +1,713 @@
+﻿@model List<DashboardViewModel>
+
+@{
+    ViewData["Title"] = "StatusAppo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        background-color: #fff;
+        /*box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);*/
+        box-shadow: 0 10px 10px 10px rgb(0 0 0 / 11%), 0 0px 0px 0px rgb(0 0 0 / 50%)
+    }
+
+    .card-header {
+        background-color: #fff;
+    }
+
+    .circal {
+        width: 48px;
+        height: 48px;
+        background-position: center;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(64, 64, 64, 0.4);
+        border-radius: 0.75rem;
+        margin-top: -1.5rem;
+        position: absolute;
+        text-align: center;
+        color: #fff;
+        top: 31%;
+        font-size: 1.5rem;
+        color: #fff;
+        top: -11px;
+        position: relative;
+    }
+
+    .icon-lg {
+        top: 10%;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+    .bg-gradient-primary {
+        background-image: linear-gradient(195deg, #EC407A 0%, #D81B60 100%);
+    }
+
+    .bg-gradient-dark {
+        background-image: linear-gradient(195deg, #42424a 0%, #191919 100%);
+    }
+
+    .bg-gradient-success {
+        background-image: linear-gradient(195deg, #66BB6A 0%, #43A047 100%);
+    }
+
+    .bg-gradient-info {
+        background-image: linear-gradient(195deg, #49a3f1 0%, #1A73E8 100%);
+    }
+</style>
+
+<div class="whiteBackround border">
+
+    <div class="form-group row">
+        <div class="col-12">
+            <h1 class="text-info text-right">لوحة القيادة</h1>
+        </div>
+    </div>
+
+    <form method="get">
+        @{
+            DateTime fromDate;
+            DateTime toDate;
+            fromDate = DateTime.Parse(ViewBag.d1);
+            toDate = DateTime.Parse(ViewBag.d2);
+        }
+        <div class="input-group border mb-5">
+            <div class="container row mb-3 mt-3">
+                <div class="col-sm-5">
+                    <input id="d1" type="text" name="fromDate" class="datepicker form-control" value="@fromDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-5">
+                    <input id="d2" type="text" name="toDate" class="datepicker form-control" value="@toDate.ToString("yyy-MM-dd")" onchange="CompareDate()" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary">تنفيذ</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="form-group row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-success">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-0">عدد المستخدمين</p>
+                                <h4 class="mb-0">@Model.FirstOrDefault().TotalUser</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-primary">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-0">مستخدمي اليوم</p>
+                                <h4 class="mb-0">53</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <div class="circal bg-gradient-info">
+                                <i class="fa-regular fa-user icon-lg"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="text-left pt-5">
+                                <p class="text-sm mb-0">عدد السائقين</p>
+                                <h4 class="mb-0">@Model.FirstOrDefault().TotalDriver</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <div>
+       
+
+        @if (Model.Count() == 0)
+        {
+            <p class="text-danger text-center"> لا توجد سجلات .....</p>
+        }
+        else
+        {
+    <div class="form-group row">
+        <!--المواعيد المنفذه والغير منفذه-->
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12 mb-5">
+                    <div class="card">
+                        <canvas id="myChartline" width="400" height="200" role="img"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--حالة المواعيد-->
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12 mb-5">
+                    <div class="card">
+                        <canvas id="ChartStausAppo" width="400" height="200" role="img"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+            <div class="form-group row">
+                <!--تقرير عن المواعيد -->
+                <div class="col-sm-12 mb-5">
+                    <div class="container">
+                        <p>
+                            <span class="text-info font-weight-bold">ملخص : </span>
+                            عن المواعيد التي تم حجزها ومعرفة المواعيد التي لم يتم تنفيذها من قبل مسئول الحركة أو من قبل السائق وكذلك المواعيد الملغاه والمنفذه
+                        </p>
+                        <table id="tb" class="table table-bordered">
+                            <thead style="background-color:#e2dfdf">
+                                <tr>
+                                    <th>اسم الفرع</th>
+                                    <th>اجمالي المواعيد</th>
+                                    <th>المواعيد المنفذه</th>
+                                    <th>المواعيد التي لم تنفذ من قبل المسؤول</th>
+                                    <th>المواعيد التي لم تنفذ من قبل السائق</th>
+                                    <th>المواعيد التي تم الغاءها من قبل السائق</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!--الأعلى مواعيد حسب الأحياء-->
+                <div class="col-sm-6">
+
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <div class="card">
+                                <canvas id="ChartNeigh" width="400" height="200" role="img"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--الأعلى مواعيد حسب السائق-->
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <div class="card">
+                                <canvas id="ChartDriver" width="400" height="200" role="img"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <!--المواعيد المنفذه والغير منفذه-->
+                <div class="col-sm-6">
+
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <div class="card">
+                                <canvas id="ChartStausExuc" width="400" height="200" role="img"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+                <!--الأعلى مواعيد حسب الفروع-->
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-12 mb-5">
+                            <div class="card">
+                                <canvas id="ChartView" width="400" height="200" role="img"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script src="~/js/CustomDateTimePicker.js"></script>
+    <script src="~/js/CompareDate .js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(function () {
+            //تقرير
+            $(function () {
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/Statistics/Dashboard/CountAppoByStatus",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success(data) {
+                        if (data != null) {
+                            var html = '';
+                            $.each(data, function (key, item) {
+                                html += '<tr>';
+                                html += '<td>' + item.branchName + '</td>';
+                                html += '<td>' + item.total + '</td>';
+                                html += '<td>' + item.completedDone + '</td>';
+                                html += '<td>' + item.bookingDone + '</td>';
+                                html += '<td>' + item.driverDone + '</td>';
+                                html += '<td>' + item.cancelDone + '</td>';
+                                html += '</tr>';
+                            });
+                            $('.tbody').html(html);
+                        };
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            });
+
+            // عدد المواعيد والمنفذ منها
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/CompletedAppointments",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+
+                        var _data = result;
+                        var _branchName = _data[0];
+                        var _completedDone = _data[3];
+                        var _total = _data[5];
+
+                        const ChartLine = document.getElementById('myChartline').getContext('2d');
+
+                        var chart = new Chart(ChartLine, {
+                            type: 'line',
+                            data: {
+                                labels: _branchName,
+                                datasets: [{
+                                    label: 'عدد المواعيد',
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#ff0000',
+                                    borderWidth: 2,
+                                    pointBorderColor: false,
+                                    startAngle: 0,
+                                    data: _total,
+                                    fill: false,
+                                    lineTension: .4,
+                                    showLine: true,
+                                },
+                                {
+                                    label: 'المواعيد المنفذَه',
+                                    fill: false,
+                                    lineTension: .4,
+                                    startAngle: 0,
+                                    data: _completedDone,
+                                    backgroundColor: 'transparent',
+                                    pointBorderColor: '#32621e',
+                                    borderColor: '#32621e',
+                                    borderWidth: 2,
+                                    showLine: true,
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'حركة المواعيد حسب التاريخ والفرع'
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد حسب الفروع
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/CountAppo",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    //contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: OnSuccessResult,
+                    error: OnError
+                });
+                function OnSuccessResult(data) {
+                    var _data = data;
+                    var _chartLabels = _data[0];
+                    var _chartData = _data[1];
+                    const ctx = document.getElementById('ChartView').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: _chartLabels,
+                            datasets: [{
+                                label: 'الأعلى مواعيد حسب الفروع',
+                                data: _chartData,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                };
+                function OnError(err) {
+                    alert("Dynamic Contet Load Faild");
+                };
+            })
+
+            //الأعلى مواعيد حسب الأحياء
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/GetMaxNiegh",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+                        const ctx = document.getElementById('ChartNeigh').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'الأعلى مواعيد حسب الأحياء',
+                                    data: _chartData,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //الأعلى مواعيد حسب السائقين
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/CouuExuDriver",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+                        var _data = result;
+                        var _chartLabels = _data[0];
+                        var _chartData = _data[1];
+                        const ctx = document.getElementById('ChartDriver').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _chartLabels,
+                                datasets: [{
+                                    label: 'الأعلى مواعيد حسب السائقين',
+                                    data: _chartData,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //المواعيد المنفذه والغير منفذه
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+                var barCanvas = document.getElementById("ChartStausExuc").getContext('2d');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/StatusExcu",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+
+                        var _data = result;
+                        var _branchName = _data[0];
+                        var _bookingDone = _data[1];
+                        var _driverDone = _data[2];
+                        var _completedDone = _data[3];
+                        var _cancelDone = _data[4];
+                        var _total = _data[5];
+
+                        var bookingDone = {
+                            label: 'المواعيد المحجوزه',
+                            data: _total,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderWidth: 0,
+                            lineTension: 0,
+                        };
+                        var completedDone = {
+                            label: 'المواعيد المنفذه',
+                            data: _completedDone,
+                            backgroundColor: 'rgb(54, 162, 235)',
+                            borderWidth: 0,
+                        };
+                        var datasetvalues = {
+                            labels: _branchName,
+                            datasets: [bookingDone, completedDone]
+                        };
+
+                        var chartOptions = {
+                            scales: {
+
+                            }
+                        };
+
+                        var barChart = new Chart(barCanvas, {
+                            type: 'bar',
+                            data: datasetvalues,
+                            options: chartOptions
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+
+            //حالة المواعيد
+            $(function () {
+
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Statistics/Dashboard/StatusExcu",
+                    dataType: "json",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success: function (result) {
+
+                        var _data = result;
+                        var _branchName = _data[0];
+                        var _bookingDone = _data[1];
+                        var _driverDone = _data[2];
+                        var _completedDone = _data[3];
+                        var _cancelDone = _data[4];
+                        var _total = _data[5];
+
+                        const ctx = document.getElementById('ChartStausAppo').getContext('2d');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: _branchName,
+                                datasets: [{
+                                    label: '# عدد الحجوزات',
+                                    data: _total,
+                                    borderWidth: 1,
+                                    borderColor: '#36A2EB',
+                                    backgroundColor: '#9BD0F5',
+                                },
+                                {
+                                    label: '# المواعيد المنفذه',
+                                    data: _completedDone,
+                                    borderWidth: 1,
+                                    borderColor: '#FF6384',
+                                    backgroundColor: '#FFB1C1',
+                                },
+                                {
+                                    label: '# المواعيد الملغاه',
+                                    data: _cancelDone,
+                                    borderWidth: 1,
+                                    borderColor: '#FF6384',
+                                    backgroundColor: '#FFB1C1',
+                                }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                });
+            })
+        });
+    </script>
+}
+
+
+
+@*var branchId = [];
+    var branchName = [];
+    var bookingDone = [];
+    var driverDone = [];
+    var completedDone = [];
+    var cancelDone = [];
+    var total = [];
+
+    @if (Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            @:branchId.push(@item.BranchId)
+            @:branchName.push(@Html.Raw(Json.Serialize(item.BranchName)));
+            @:bookingDone.push(@item.BookingDone);
+            @:driverDone.push(@item.DriverDone);
+            @:completedDone.push(@item.CompletedDone);
+            @:cancelDone.push(@item.CancelDone);
+            @:total.push(@item.Total);
+        }
+     };*@
+
+
+
+      @*$(function () {
+                let dat1 = $('#d1').val();
+                let dat2 = $('#d2').val();
+                var appo = [];
+                $.ajax({
+                    type: 'POST',
+                    url: "/Statistics/Dashboard/CountAppoByStatus",
+                    data: { fromDate: dat1, toDate: dat2 },
+                    success(data) {
+                        if (data != null) {
+                            $.each(data, function (key, value) {
+                                appo.push([
+                                    value.branchName,
+                                    value.bookingDone,
+                                    value.driverDone,
+                                    value.completedDone,
+                                    value.cancelDone,
+                                    value.total
+                                ]);
+                            });
+                        }
+                        $('#tb').dataTable({
+                            destroy: true,
+                            data: appo
+                        });
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                    }
+                })
+            });*@

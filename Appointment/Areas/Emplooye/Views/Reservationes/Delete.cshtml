@@ -1,0 +1,56 @@
+﻿@model Reservations
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="whiteBackround border">
+
+    <h2 class="text-info">حذف بيانات الموعد</h2>
+    <br />
+
+    <form asp-action="Delete" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="AppointmentDate" class="input-group-text"></label>
+            <div class="input-group mb-3 date">
+                <input type="text" asp-for="AppointmentDate" class="datepicker form-control"
+                       value="@Model.AppointmentDate.ToString("yyy-MM-dd")" readonly />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Priod" class="input-group-text"></label>
+            <select class="form-control"
+                    asp-for="Priod"
+                    asp-items="Html.GetEnumSelectList<Reservations.Epriod>()" disabled>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Donation" class="input-group-text"></label>
+            <textarea asp-for="Donation" class="form-control" style="height:100px" readonly></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Comments" class="input-group-text"></label>
+            <textarea asp-for="Comments" class="form-control" style="height:100px" readonly></textarea>
+        </div>
+
+        <div class="mb-3">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-4">
+                <partial name="_DeleteAndBackToListButtonPartial" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
